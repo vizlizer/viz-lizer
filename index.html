@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIZ LIZER | 3D Artist</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Gumroad Script -->
+    <script src="https://gumroad.com/js/gumroad.js"></script>
+    <!-- Three.js for Full-Page 3D Background Model -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <!-- FULL-PAGE INTERACTIVE 3D BACKGROUND CANVAS -->
+    <canvas id="global-3d-canvas"></canvas>
+
+    <!-- REAL-TIME VFX CANVAS -->
+    <canvas id="vfx-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <!-- SECRET THEME TRIGGER ADDED TO LOGO -->
+        <div class="logo" id="secret-theme-trigger" title="Toggle Secret Theme">
+            <img src="Logo.png" alt="Viz Lizer Logo" class="logo-img">
+            <span>VIZ LIZER</span>
+        </div>
+        
+        <div class="nav-links">
+            <!-- Main Links (Collapses into Hamburger on Mobile) -->
+            <div class="main-menu" id="main-menu">
+                <a href="#portfolio">Projects</a>
+                <a href="#store">Asset Store</a>
+                <a href="#about">About</a>
+                
+                <div class="nav-dropdown contact-dropdown">
+                    <span class="btn-outline dropbtn">Contact</span>
+                    <div class="dropdown-content">
+                        <a href="mailto:vizlizersupport@gmail.com"><i class="fas fa-envelope"></i> Email</a>
+                        <a href="https://www.instagram.com/viz_lizer/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+                        <a href="https://www.youtube.com/@VizLizer" target="_blank"><i class="fab fa-youtube"></i> YouTube</a>
+                        <a href="https://vizlizer.gumroad.com"><i class="fas fa-store"></i> Gumroad</a>
+                        <a href="https://buymeacoffee.com/vizlizer" target="_blank"><i class="fas fa-coffee"></i> Buy Me a Coffee</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Utility Icons (Always Visible) -->
+            <div class="utility-icons">
+                <!-- 3D Background Settings Dropdown -->
+                <div class="nav-dropdown">
+                    <button class="theme-btn" aria-label="3D Background Settings" title="Change 3D Background">
+                        <i class="fas fa-cube"></i>
+                    </button>
+                    <div class="dropdown-content right-align">
+                        <a href="#" class="bg-option" data-bg="shape1">🕸️ Wire Icosahedron</a>
+                        <a href="#" class="bg-option" data-bg="shape2">🥨 Wireframe Knot</a>
+                        <a href="#" class="bg-option" data-bg="shape3">♾️ Solid Infinity Knot</a>
+                        <a href="#" class="bg-option" data-bg="shape4">🍩 Neon Rings</a>
+                        <a href="#" class="bg-option" data-bg="none">❌ None</a>
+                    </div>
+                </div>
+
+                <!-- Cursor VFX Settings Dropdown -->
+                <div class="nav-dropdown vfx-dropdown">
+                    <button class="theme-btn" aria-label="Cursor VFX Settings" title="Change Cursor Effects">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </button>
+                    <div class="dropdown-content right-align">
+                        <a href="#" class="vfx-option" data-vfx="fire">🔥 Fire Trail</a>
+                        <a href="#" class="vfx-option" data-vfx="cyber-blue">☄️ Cyber Blue</a>
+                        <a href="#" class="vfx-option" data-vfx="magic">✨ Magic Dust</a>
+                        <a href="#" class="vfx-option" data-vfx="plasma">🟣 Neon Plasma</a>
+                        <a href="#" class="vfx-option" data-vfx="matrix">🟩 Matrix Rain</a>
+                        <a href="#" class="vfx-option" data-vfx="none">❌ None</a>
+                    </div>
+                </div>
+
+                <!-- Light/Dark Toggle -->
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+
+                <!-- Hamburger Button (Visible only on mobile) -->
+                <button id="hamburger-icon" class="theme-btn hamburger-btn" aria-label="Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <video id="hero-video" src="background.mp4" muted playsinline preload="auto"></video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="tagline">SIMULATIONS • REAL-TIME • VFX</p>
+            <h1>VIZ LIZER</h1>
+            <h2>3D Artist</h2>
+            <div class="hero-buttons">
+                <a href="#portfolio" class="btn-primary">Explore Projects</a>
+                <a href="#store" class="btn-secondary">Browse Asset Store</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio & Gallery -->
+    <section id="portfolio" class="section">
+        <div class="portfolio-glass-wrapper" id="project-wrapper">
+            <h3 class="section-title">FEATURED PROJECT</h3>
+            
+            <div class="featured-project">
+                <div class="project-info glass-card">
+                    <h4>Explore Latest Works</h4>
+                    <p>Check out my latest 3D works and experiments. Dive in and see what I’ve been building lately.</p>
+                    <div class="gallery-info-text"><small>✨ Click any slide to watch instantly on YouTube</small></div>
+                </div>
+                
+                <div class="carousel-container glass-card">
+                    <div class="carousel-track">
+                        <a href="https://www.youtube.com/shorts/PpO0XwiEBGw" target="_blank" class="carousel-slide active" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('catacombs_work.png');">
+                            <div class="slide-content">
+                                <h5>The Catacombs : Mini Militia</h5>
+                                <span class="watch-badge"><i class="fab fa-youtube"></i> Watch on YouTube</span>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/shorts/tk60bUvYX5w" target="_blank" class="carousel-slide" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('oggy_work.png');">
+                            <div class="slide-content">
+                                <h5>Oggy's BHK Home Tour</h5>
+                                <span class="watch-badge"><i class="fab fa-youtube"></i> Watch on YouTube</span>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/shorts/HMOaCAQ97-A" target="_blank" class="carousel-slide" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('outpost_work.png');">
+                            <div class="slide-content">
+                                <h5>The Outpost : Mini Militia</h5>
+                                <span class="watch-badge"><i class="fab fa-youtube"></i> Watch on YouTube</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <button class="carousel-btn prev-btn" aria-label="Previous Slide">&#10094;</button>
+                    <button class="carousel-btn next-btn" aria-label="Next Slide">&#10095;</button>
+
+                    <div class="carousel-dots">
+                        <span class="dot active" data-slide="0"></span>
+                        <span class="dot" data-slide="1"></span>
+                        <span class="dot" data-slide="2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNECTED TO EXPLORE.HTML -->
+            <div class="project-popup-btn-container" id="popup-btn-container">
+                <a href="explore.html" id="project-action-btn" class="btn-primary project-popup-btn">
+                    Explore <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Asset Store -->
+    <section id="store" class="section">
+        <h3 class="section-title">3D ASSET STORE</h3>
+        
+        <div class="store-controls">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="asset-search" placeholder="Search assets...">
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">ALL</button>
+                <button class="filter-btn" data-filter="free">FREE ONLY</button>
+                <button class="filter-btn" data-filter="models">3D MODELS</button>
+                <button class="filter-btn" data-filter="projects">PROJECT FILES</button>
+                <button class="filter-btn" data-filter="vfx">VFX & SIM</button>
+            </div>
+        </div>
+
+        <div class="store-grid">
+            <div class="store-card paid models" data-category="paid models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="oggyhouse.png" alt="Oggy House 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge paid">$5</span>
+                    <h5>Oggy House 3D Model</h5>
+                    <p class="format">3D Environment</p>
+                    <a href="https://vizlizer.gumroad.com/l/cegned" class="btn-gumroad">Get Asset</a>
+                </div>
+            </div>
+
+            <div class="store-card free projects" data-category="free projects">
+                <div class="card-img" style="padding: 0; overflow: hidden;">
+                    <img src="aadu.png" alt="Aadu Project File" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Aadu Project File</h5>
+                    <p class="format">3D Project File</p>
+                    <a href="https://vizlizer.gumroad.com/l/uuhssv" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card paid models" data-category="paid models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="premier.png" alt="Premier Padmini Taxi 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge paid">$2</span>
+                    <h5>Premier Padmini Taxi 3D Model</h5>
+                    <p class="format">3D Vehicle Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/oixlsq" class="btn-gumroad">Get Asset</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="dragon.png" alt="Dragon 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Dragon 3D Model</h5>
+                    <p class="format">3D Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/ncnsgo" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="saw.png" alt="Saw Gun Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Saw Gun Mini Militia 3D Model</h5>
+                    <p class="format">3D Weapon Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/fgwef" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="flame.png" alt="Flame Thrower Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Flame Thrower Mini Militia 3D Model</h5>
+                    <p class="format">3D Weapon Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/mpyftv" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="porsche.png" alt="Porsche 911 Minnal Murali Edition 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Porsche 911 Minnal Murali Edition 3D Model</h5>
+                    <p class="format">3D Vehicle Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/nglukf" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free vfx" data-category="free vfx simulation">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="portal.png" alt="Dr Strange Portal Particle Simulation" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Dr Strange Portal Particle Simulation</h5>
+                    <p class="format">VFX & Simulation</p>
+                    <a href="https://vizlizer.gumroad.com/l/lshub" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About & Tools -->
+    <section id="about" class="section about-section">
+        <div class="about-text">
+            <h3>ABOUT</h3>
+            <p>Freelance 3D artist, specializing in procedural simulations, real-time environments, and comprehensive VFX pipelines.</p>
+        </div>
+        <div class="tools-grid">
+            <span>Houdini</span>
+            <span>Blender</span>
+            <span>Unreal Engine</span>
+            <span>Nuke</span>
+            <span>DaVinci Resolve</span>
+            <span>Substance Painter</span>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal container for Images -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <div class="lightbox-content">
+            <div class="placeholder-large">Expanded Media Visual</div>
+        </div>
+    </div>
+
+    <!-- AI CHATBOT WIDGET -->
+    <div id="ai-chat-widget">
+        <!-- Floating Chat Trigger Button -->
+        <button id="chat-toggle-btn" aria-label="Open AI Assistant" title="Chat with Viz AI">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+
+        <!-- Chat Window Box -->
+        <div id="chat-window" class="chat-window-hidden">
+            <div class="chat-header">
+                <div class="chat-title-area">
+                    <span class="chat-status-dot"></span>
+                    <h4>Viz AI</h4>
+                </div>
+                <button id="chat-close-btn" aria-label="Close Chat"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages-body">
+                <div class="chat-message bot-msg">
+                    Hey there! 👋 Ask me anything about VIZ LIZER's 3D artworks, Houdini simulations, or asset store!
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chat-user-input" placeholder="Type a message..." autocomplete="off">
+                <button id="chat-send-btn" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer / Contact -->
+    <footer id="contact">
+        <h3>GET IN TOUCH</h3>
+        <p>Email: <a href="mailto:vizlizersupport@gmail.com" class="contact-email">vizlizersupport@gmail.com</a></p>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/viz_lizer/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@VizLizer" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://vizlizer.gumroad.com" title="Gumroad Store"><i class="fas fa-store"></i></a>
+            <a href="https://buymeacoffee.com/vizlizer" target="_blank" class="bmc-btn" title="If my 3D assets have helped you with your projects, consider buying me a coffee! ☕">
+                <i class="fas fa-coffee"></i> Buy Me a Coffee
+            </a>
+        </div>
+
+        <p class="copyright">© 2026 VIZ LIZER. All rights reserved.</p>
+        <p class="gumroad-secure">Securely powered by Gumroad.</p>
+    </footer>
+
+    <!-- Official Buy Me a Coffee Popup Widget Script -->
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="vizlizer" data-description="Support me on Buy me a coffee!" data-message="If my assets helped you, consider buying me a coffee! ☕" data-color="#ff5722" data-position="Right" data-x_margin="30" data-y_margin="30"></script>
+
+    <!-- JS File for interactions -->
+    <script src="script.js"></script>
+</body>
+</html>

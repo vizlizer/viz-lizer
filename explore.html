@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIZ LIZER | Cinematic Explore</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js for Glowing Liquid Particle Streams -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* Force Explore Page to Always Remain Dark Mode */
+        :root {
+            --bg-color: #0b0b0e !important;
+            --text-main: #ffffff !important;
+            --text-muted: #94a3b8 !important;
+            --glass-bg: rgba(18, 18, 24, 0.75) !important;
+            --glass-border: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #0b0b0e !important;
+            color: #ffffff !important;
+        }
+
+        /* Fluid Ribbon Stream Canvas */
+        #explore-particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            background-color: #0b0b0e !important;
+        }
+
+        /* Minimal Professional Scroll Instruction Header */
+        .explore-header {
+            height: 20vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .scroll-instruction {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            animation: bounceInstruction 2s infinite ease-in-out;
+        }
+
+        @keyframes bounceInstruction {
+            0%, 100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+
+        /* Pinned Always-Visible Back to Home Button */
+        .back-home-btn {
+            position: fixed;
+            top: 30px;
+            left: 5%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 9px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999; /* Always stays on top of video cards and particles */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .back-home-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* --- CINEMATIC CENTERED YOUTUBE SCROLL CONTAINER --- */
+        .video-stack-section {
+            position: relative;
+            width: 100%;
+            height: calc(18 * 100vh); 
+            z-index: 2;
+        }
+
+        .video-stack-sticky {
+            position: sticky;
+            top: 10vh;
+            height: 80vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 4%;
+        }
+
+        .video-card-wrapper {
+            position: absolute;
+            width: 100%;
+            max-width: 460px;
+            height: 75vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            
+            opacity: 0;
+            transform: translateY(120px) scale(0.9);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .video-card-wrapper.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .video-card-wrapper.exit {
+            opacity: 0;
+            transform: translateY(-120px) scale(0.9);
+            pointer-events: none;
+        }
+
+        /* YouTube Embed Container */
+        .card-video-box {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+        }
+
+        .card-video-box iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: cover;
+        }
+
+        .explore-footer-spacer {
+            height: 20vh;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .video-card-wrapper {
+                max-width: 90%;
+                height: 72vh;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PINNED BACK TO HOME BUTTON -->
+    <a href="index.html" class="back-home-btn">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <!-- FLUID STREAM PARTICLE CANVAS -->
+    <canvas id="explore-particle-canvas"></canvas>
+
+    <!-- REAL-TIME VFX CURSOR -->
+    <canvas id="vfx-canvas"></canvas>
+
+    <!-- Minimal Professional Header Instruction -->
+    <section class="explore-header">
+        <div class="scroll-instruction">↓ Scroll down to explore</div>
+    </section>
+
+    <!-- STACKING VIDEO SCROLL SECTION -->
+    <section class="video-stack-section" id="video-stack-section">
+        <div class="video-stack-sticky" id="video-stack-container">
+            <!-- Dynamically injected YouTube Shorts sequence -->
+        </div>
+    </section>
+
+    <div class="explore-footer-spacer"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            const stackContainer = document.getElementById('video-stack-container');
+            
+            // All 18 YouTube Shorts IDs mapped in correct sequential order
+            const videoIds = [
+                "YUithVJBNZs", "skjSHHbqcxg", "SqlHo3vDhfY", "KWI_phbMykc", 
+                "H51XIu5sl_Y", "lz1BuRN6v4E", "3OT6FS2o0C8", "gYQ8Q6MB7Fw", 
+                "bUypJqWvLu8", "hhdgXOaiSkQ", "hluXc1ZUa3k", "3XYE6agHCu4", 
+                "QkqSUqmGXb0", "ktrWlI-o9EU", "dO1bM4846zM", "HMOaCAQ97-A", 
+                "tk60bUvYX5w", "PpO0XwiEBGw"
+            ];
+
+            const currentOrigin = window.location.origin !== 'null' ? window.location.origin : 'https://www.youtube.com';
+
+            videoIds.forEach((id, index) => {
+                const card = document.createElement('div');
+                card.className = `video-card-wrapper ${index === 0 ? 'active' : ''}`;
+                card.setAttribute('data-index', index);
+                
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${id}?enablejsapi=1&autoplay=0&mute=1&loop=1&playlist=${id}&controls=1&origin=${encodeURIComponent(currentOrigin)}`;
+
+                card.innerHTML = `
+                    <div class="card-video-box">
+                        <iframe src="${embedUrl}" title="Cinematic Breakdown" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                `;
+                stackContainer.appendChild(card);
+            });
+
+            // --- 1. ORGANIC LIQUID STREAM FLOW (THREE.JS) ---
+            const particleCanvas = document.getElementById('explore-particle-canvas');
+            if (particleCanvas && typeof THREE !== 'undefined') {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.z = 40;
+
+                const renderer = new THREE.WebGLRenderer({ canvas: particleCanvas, alpha: true, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                function createGlowingSphereTexture() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 64;
+                    canvas.height = 64;
+                    const ctx = canvas.getContext('2d');
+                    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+                    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+                    grad.addColorStop(0.3, 'rgba(255, 255, 255, 0.7)');
+                    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, 64, 64);
+                    return new THREE.CanvasTexture(canvas);
+                }
+
+                const particleCount = 1800;
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+                const originalPositions = new Float32Array(particleCount * 3);
+
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    const x = (Math.random() - 0.5) * 60;
+                    const y = (Math.random() - 0.5) * 40;
+                    const z = (Math.random() - 0.5) * 40;
+
+                    positions[i] = x;
+                    positions[i + 1] = y;
+                    positions[i + 2] = z;
+
+                    originalPositions[i] = x;
+                    originalPositions[i + 1] = y;
+                    originalPositions[i + 2] = z;
+                }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+                const isBlue = localStorage.getItem('blueTheme') === 'true';
+                const particleMaterial = new THREE.PointsMaterial({
+                    color: isBlue ? 0x00a8ff : 0xff5722,
+                    size: 1.0,
+                    map: createGlowingSphereTexture(),
+                    transparent: true,
+                    opacity: 0.75,
+                    depthWrite: false,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const particleSystem = new THREE.Points(geometry, particleMaterial);
+                scene.add(particleSystem);
+
+                let mouseX = 0;
+                let mouseY = 0;
+                let targetMouseX = 0;
+                let targetMouseY = 0;
+                let scrollOffset = 0;
+
+                window.addEventListener('mousemove', (e) => {
+                    targetMouseX = (e.clientX - window.innerWidth / 2) * 0.03;
+                    targetMouseY = (e.clientY - window.innerHeight / 2) * 0.03;
+                });
+
+                window.addEventListener('scroll', () => {
+                    scrollOffset = window.scrollY * 0.01;
+                });
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+
+                let time = 0;
+                function animateFluidStreams() {
+                    requestAnimationFrame(animateFluidStreams);
+
+                    time += 0.015;
+                    mouseX += (targetMouseX - mouseX) * 0.05;
+                    mouseY += (targetMouseY - mouseY) * 0.05;
+
+                    const posAttr = geometry.attributes.position;
+
+                    for (let i = 0; i < particleCount; i++) {
+                        let idx = i * 3;
+                        let px = originalPositions[idx];
+                        let py = originalPositions[idx + 1];
+                        let pz = originalPositions[idx + 2];
+
+                        py += Math.sin(time + px * 0.1) * 0.2;
+                        px += Math.cos(time + pz * 0.1) * 0.2 - scrollOffset * 0.2;
+
+                        if (px < -30) px = 30;
+                        if (px > 30) px = -30;
+
+                        const dx = mouseX - px;
+                        const dy = mouseY - py;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 12) {
+                            const force = (12 - dist) / 12;
+                            px -= (dx / dist) * force * 2.0;
+                            py -= (dy / dist) * force * 2.0;
+                        }
+
+                        posAttr.setXYZ(i, px, py, pz);
+                    }
+                    posAttr.needsUpdate = true;
+
+                    particleSystem.rotation.y = mouseX * 0.005;
+                    particleSystem.rotation.x = -mouseY * 0.005;
+
+                    renderer.render(scene, camera);
+                }
+
+                animateFluidStreams();
+            }
+
+            // --- 2. SMOOTH CARD STACKING & YOUTUBE IFRAME CONTROL ---
+            const stackSection = document.getElementById('video-stack-section');
+            const videoCards = document.querySelectorAll('.video-card-wrapper');
+
+            window.addEventListener('scroll', () => {
+                if (!stackSection) return;
+
+                const rect = stackSection.getBoundingClientRect();
+                const scrollProgress = -rect.top / (stackSection.offsetHeight - window.innerHeight);
+                
+                const clampedProgress = Math.max(0, Math.min(1, scrollProgress));
+                const totalCards = videoCards.length;
+                const activeIndex = Math.min(totalCards - 1, Math.floor(clampedProgress * totalCards * 1.02));
+
+                videoCards.forEach((card, idx) => {
+                    const iframe = card.querySelector('iframe');
+                    const src = iframe.getAttribute('src');
+
+                    if (idx < activeIndex) {
+                        card.classList.remove('active');
+                        card.classList.add('exit');
+                        if (src.includes('&autoplay=1')) {
+                            iframe.setAttribute('src', src.replace('&autoplay=1', '&autoplay=0'));
+                        }
+                    } else if (idx === activeIndex) {
+                        card.classList.remove('exit');
+                        card.classList.add('active');
+                        if (!src.includes('&autoplay=1')) {
+                            iframe.setAttribute('src', src.replace('&autoplay=0', '&autoplay=1'));
+                        }
+                    } else {
+                        card.classList.remove('active');
+                        card.classList.remove('exit');
+                        if (src.includes('&autoplay=1')) {
+                            iframe.setAttribute('src', src.replace('&autoplay=1', '&autoplay=0'));
+                        }
+                    }
+                });
+            });
+
+            // --- 3. ACCENT THEME & CURSOR VFX SYNC (DISREGARDING LIGHT MODE) ---
+            const isBlueTheme = localStorage.getItem('blueTheme') === 'true';
+            if (isBlueTheme) {
+                document.body.classList.add('blue-theme');
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
