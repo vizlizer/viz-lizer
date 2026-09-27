@@ -39,30 +39,48 @@
             background-color: #0b0b0e !important;
         }
 
-        /* Minimal Professional Scroll Instruction Header */
-        .explore-header {
-            height: 20vh;
+        /* --- PINNED SCROLL INSTRUCTION WITH POP ANIMATION --- */
+        .pinned-scroll-container {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none; /* Allows clicking through it if needed */
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 0 5%;
-            position: relative;
-            z-index: 2;
         }
 
         .scroll-instruction {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 3px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
             font-weight: 600;
-            animation: bounceInstruction 2s infinite ease-in-out;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: popBounce 2.5s infinite cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        @keyframes bounceInstruction {
-            0%, 100% { transform: translateY(0); opacity: 0.6; }
-            50% { transform: translateY(6px); opacity: 1; }
+        @keyframes popBounce {
+            0%, 100% { 
+                transform: scale(1) translateY(0); 
+                opacity: 0.85; 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            }
+            50% { 
+                transform: scale(1.08) translateY(-6px); 
+                opacity: 1; 
+                color: var(--accent-color);
+                border-color: var(--accent-color);
+                box-shadow: 0 15px 40px rgba(255, 87, 34, 0.25); /* Subtle glow */
+            }
         }
 
         /* Pinned Always-Visible Back to Home Button */
@@ -148,6 +166,42 @@
             pointer-events: none;
         }
 
+        /* --- ROTATE BUTTON & ROTATION LOGIC --- */
+        .rotate-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .rotate-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .rotate-btn i {
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .rotate-btn.active i {
+            transform: rotate(90deg); /* Icon spins when activated */
+        }
+
         /* YouTube Embed Container */
         .card-video-box {
             width: 100%;
@@ -156,6 +210,11 @@
             overflow: hidden;
             background: #000;
             position: relative;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .card-video-box.rotated {
+            transform: rotate(-90deg);
         }
 
         .card-video-box iframe {
@@ -176,10 +235,26 @@
                 height: 72vh;
                 padding: 15px;
             }
+            .rotate-btn {
+                top: -12px;
+                right: -12px;
+                width: 40px;
+                height: 40px;
+            }
+            .card-video-box.rotated {
+                transform: rotate(-90deg) scale(0.65); /* Scales down on mobile so it doesn't bleed off screen */
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <img src="Logo.png" alt="Viz Lizer Loading" class="loader-logo">
+        <div class="loader-spinner"></div>
+        <p>LOADING EXPERIENCE...</p>
+    </div>
 
     <!-- PINNED BACK TO HOME BUTTON -->
     <a href="index.html" class="back-home-btn">
@@ -192,10 +267,13 @@
     <!-- REAL-TIME VFX CURSOR -->
     <canvas id="vfx-canvas"></canvas>
 
-    <!-- Minimal Professional Header Instruction -->
-    <section class="explore-header">
+    <!-- INVISIBLE SPACER (Maintains accurate scroll timing for videos) -->
+    <div style="height: 20vh; width: 100%;"></div>
+
+    <!-- PINNED SCROLL INSTRUCTION WITH POP ANIMATION -->
+    <div class="pinned-scroll-container">
         <div class="scroll-instruction">↓ Scroll down to explore</div>
-    </section>
+    </div>
 
     <!-- STACKING VIDEO SCROLL SECTION -->
     <section class="video-stack-section" id="video-stack-section">
@@ -230,10 +308,23 @@
                 const embedUrl = `https://www.youtube-nocookie.com/embed/${id}?enablejsapi=1&autoplay=0&mute=1&loop=1&playlist=${id}&controls=1&origin=${encodeURIComponent(currentOrigin)}`;
 
                 card.innerHTML = `
+                    <button class="rotate-btn" aria-label="Rotate Frame" title="Rotate 90°">
+                        <i class="fas fa-rotate-left"></i>
+                    </button>
                     <div class="card-video-box">
                         <iframe src="${embedUrl}" title="Cinematic Breakdown" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                 `;
+                
+                // --- ROTATE BUTTON LOGIC ---
+                const rotateBtn = card.querySelector('.rotate-btn');
+                const videoBox = card.querySelector('.card-video-box');
+                
+                rotateBtn.addEventListener('click', () => {
+                    videoBox.classList.toggle('rotated');
+                    rotateBtn.classList.toggle('active');
+                });
+
                 stackContainer.appendChild(card);
             });
 
