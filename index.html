@@ -14,6 +14,8 @@
     <script src="https://gumroad.com/js/gumroad.js"></script>
     <!-- Three.js for Full-Page 3D Background Model -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js GLTFLoader for Local .glb Files -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
 
@@ -32,14 +34,12 @@
 
     <!-- Navigation -->
     <nav>
-        <!-- SECRET THEME TRIGGER ADDED TO LOGO -->
         <div class="logo" id="secret-theme-trigger" title="Toggle Secret Theme">
             <img src="Logo.png" alt="Viz Lizer Logo" class="logo-img">
             <span>VIZ LIZER</span>
         </div>
         
         <div class="nav-links">
-            <!-- Main Links (Collapses into Hamburger on Mobile) -->
             <div class="main-menu" id="main-menu">
                 <a href="#portfolio">Projects</a>
                 <a href="#store">Asset Store</a>
@@ -57,9 +57,7 @@
                 </div>
             </div>
 
-            <!-- Utility Icons (Always Visible) -->
             <div class="utility-icons">
-                <!-- 3D Background Settings Dropdown -->
                 <div class="nav-dropdown">
                     <button class="theme-btn" aria-label="3D Background Settings" title="Change 3D Background">
                         <i class="fas fa-cube"></i>
@@ -73,7 +71,6 @@
                     </div>
                 </div>
 
-                <!-- Cursor VFX Settings Dropdown -->
                 <div class="nav-dropdown vfx-dropdown">
                     <button class="theme-btn" aria-label="Cursor VFX Settings" title="Change Cursor Effects">
                         <i class="fas fa-wand-magic-sparkles"></i>
@@ -88,12 +85,10 @@
                     </div>
                 </div>
 
-                <!-- Light/Dark Toggle Button -->
                 <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme" title="Toggle Light/Dark Mode">
                     <i class="fas fa-adjust"></i>
                 </button>
 
-                <!-- Hamburger Button (Visible only on mobile) -->
                 <button id="hamburger-icon" class="theme-btn hamburger-btn" aria-label="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -190,9 +185,13 @@
         </div>
 
         <div class="store-grid">
+            <!-- OGGY HOUSE (3D MODEL) -->
             <div class="store-card paid models" data-category="paid models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="oggyhouse.png" alt="Oggy House 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="oggyhouse.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge paid">$5</span>
@@ -202,6 +201,7 @@
                 </div>
             </div>
 
+            <!-- AADU PROJECT FILE -->
             <div class="store-card free projects" data-category="free projects">
                 <div class="card-img" style="padding: 0; overflow: hidden;">
                     <img src="aadu.png" alt="Aadu Project File" style="width: 100%; height: 100%; object-fit: cover;">
@@ -214,9 +214,13 @@
                 </div>
             </div>
 
+            <!-- PREMIER PADMINI (3D MODEL) -->
             <div class="store-card paid models" data-category="paid models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="premier.png" alt="Premier Padmini Taxi 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="premier.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge paid">$2</span>
@@ -226,9 +230,13 @@
                 </div>
             </div>
 
+            <!-- DRAGON (3D MODEL) -->
             <div class="store-card free models" data-category="free models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="dragon.png" alt="Dragon 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="dragon.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge free">FREE</span>
@@ -238,9 +246,13 @@
                 </div>
             </div>
 
+            <!-- SAW GUN (3D MODEL) -->
             <div class="store-card free models" data-category="free models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="saw.png" alt="Saw Gun Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="saw.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge free">FREE</span>
@@ -250,9 +262,13 @@
                 </div>
             </div>
 
+            <!-- FLAME THROWER (3D MODEL) -->
             <div class="store-card free models" data-category="free models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="flame.png" alt="Flame Thrower Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="flame.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge free">FREE</span>
@@ -262,9 +278,13 @@
                 </div>
             </div>
 
+            <!-- PORSCHE 911 (3D MODEL) -->
             <div class="store-card free models" data-category="free models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="porsche.png" alt="Porsche 911 Minnal Murali Edition 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="porsche.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge free">FREE</span>
@@ -274,6 +294,7 @@
                 </div>
             </div>
 
+            <!-- DR STRANGE PORTAL -->
             <div class="store-card free vfx" data-category="free vfx simulation">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="portal.png" alt="Dr Strange Portal Particle Simulation" style="width: 100%; height: 100%; object-fit: cover;">
@@ -286,9 +307,13 @@
                 </div>
             </div>
 
+            <!-- ELECTRIC GUN (3D MODEL) -->
             <div class="store-card free models" data-category="free models">
                 <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
                     <img src="electric.png" alt="Electric Gun + Tesla Sphere Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    <button class="preview-3d-btn" data-model="electric.glb" title="Preview in 3D">
+                        <i class="fas fa-cube"></i> 3D View
+                    </button>
                 </div>
                 <div class="card-details">
                     <span class="badge free">FREE</span>
@@ -317,28 +342,44 @@
         </div>
     </section>
 
-    <!-- VIDEO POPUP LIGHTBOX (Plays YouTube Video on Click) -->
-    <div id="video-lightbox" class="video-lightbox">
-        <div class="video-lightbox-container">
-            <!-- Rotate Button -->
-            <button class="video-rotate-btn" aria-label="Rotate Frame" title="Rotate 90°">
-                <i class="fas fa-rotate-left"></i>
-            </button>
-            <!-- Video Box -->
-            <div class="video-lightbox-content" id="video-lightbox-content">
-                <iframe id="lightbox-iframe" src="" title="Cinematic Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- THREE.JS 3D MODEL VIEWER MODAL -->
+    <div id="model-viewer-modal" class="model-viewer-modal">
+        <div class="model-viewer-container">
+            <!-- Close Button -->
+            <button class="close-model-modal" aria-label="Close Viewer">&times;</button>
+
+            <!-- HDRI / Lighting Switcher Dropdown -->
+            <div class="hdri-selector-wrapper">
+                <label><i class="fas fa-lightbulb"></i> Lighting:</label>
+                <select id="hdri-select">
+                    <option value="studio">Studio Clean</option>
+                    <option value="sunset">Warm Sunset</option>
+                    <option value="night">Cyber Dark</option>
+                </select>
             </div>
+
+            <!-- Professional Web Preview Notice Banner -->
+            <div class="model-preview-notice">
+                <i class="fas fa-info-circle"></i> Showing optimized low-poly web preview. Download full high-res asset via Gumroad.
+            </div>
+
+            <!-- Loading Spinner Overlay -->
+            <div id="model-loading-overlay" class="model-loading-overlay hide">
+                <div class="model-spinner"></div>
+                <p>LOADING 3D ASSET...</p>
+            </div>
+
+            <!-- Three.js Render Canvas -->
+            <canvas id="asset-3d-canvas"></canvas>
         </div>
     </div>
 
     <!-- AI CHATBOT WIDGET -->
     <div id="ai-chat-widget">
-        <!-- Floating Chat Trigger Button -->
         <button id="chat-toggle-btn" aria-label="Open AI Assistant" title="Chat with Viz AI">
             <i class="fas fa-comment-dots"></i>
         </button>
 
-        <!-- Chat Window Box -->
         <div id="chat-window" class="chat-window-hidden">
             <div class="chat-header">
                 <div class="chat-title-area">
