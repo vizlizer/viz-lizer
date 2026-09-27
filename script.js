@@ -408,7 +408,14 @@ document.addEventListener("DOMContentLoaded", () => {
         function appendMessage(text, className) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `chat-message ${className}`;
-            msgDiv.innerText = text;
+            
+            // Converts Markdown links [Text](URL) and raw URLs into clickable HTML links
+            let formattedText = text
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--accent-color); text-decoration: underline;">$1</a>')
+                .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent-color); text-decoration: underline;">$1</a>');
+            
+            msgDiv.innerHTML = formattedText;
+            
             const uniqueId = 'msg-' + Date.now();
             msgDiv.id = uniqueId;
             chatMessages.appendChild(msgDiv);
