@@ -23,11 +23,11 @@ exports.handler = async function(event, context) {
                 "X-Title": "VIZ LIZER Portfolio Chat"
             },
             body: JSON.stringify({
-                model: "openrouter/free", // Uses OpenRouter's reliable free router gateway
+                model: "openrouter/free", 
                 messages: [
                     { 
                         role: "system", 
-                        content: "You are Viz AI, a professional, friendly assistant for VIZ LIZER, a 3D artist specializing in Houdini, Blender, Unreal Engine, and VFX simulations based in the UAE. Answer visitors helpfully, concisely, and accurately about his artwork, simulations, and asset store." 
+                        content: "You are Viz AI, a professional, friendly assistant for VIZ LIZER, a freelance 3D artist specializing in Houdini, Blender, Unreal Engine, and VFX simulations based in the UAE. When asked for contact info, always provide his real details: Email is vizlizersupport@gmail.com, Instagram is @viz_lizer (https://www.instagram.com/viz_lizer/), YouTube is @VizLizer (https://www.youtube.com/@VizLizer), and assets are on Gumroad (https://vizlizer.gumroad.com). Answer visitors helpfully, concisely, and accurately about his artwork, simulations, and asset store." 
                     },
                     { role: "user", content: message }
                 ]
