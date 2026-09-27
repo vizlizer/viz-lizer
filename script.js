@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- PRELOADER & HERO VIDEO SYNC LOGIC ---
+    // --- PRELOADER GATE ---
     const preloader = document.getElementById('preloader');
     const heroVideo = document.getElementById('hero-video');
 
     function removePreloader() {
         if (preloader) {
             preloader.classList.add('loaded');
-            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+            setTimeout(() => { preloader.style.display = 'none'; }, 600);
         }
     }
 
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 removePreloader();
             } else {
                 heroVideo.addEventListener('canplaythrough', removePreloader, { once: true });
-                setTimeout(removePreloader, 4000); 
+                setTimeout(removePreloader, 3500); 
             }
         } else {
             removePreloader();
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const popupBtnContainer = document.getElementById('popup-btn-container');
 
     if (projectWrapper && popupBtnContainer) {
-        const observerOptions = { root: null, threshold: 0.6 };
+        const observerOptions = { root: null, threshold: 0.5 };
         const projectObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -68,14 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    window.addEventListener('pageshow', (event) => {
-        if (event.persisted || transitionOverlay.classList.contains('active')) {
-            transitionOverlay.classList.remove('active');
-        }
-    });
-
-    let global3DMaterial = null;
-
     // --- REALTIME VFX CURSOR ---
     const canvas = document.getElementById('vfx-canvas');
     const ctx = canvas.getContext('2d');
@@ -88,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     let particles = [];
-    let mouse = { x: width/2, y: height/2, moved: false };
+    let mouse = { x: width/2, y: height/2 };
     let currentVfx = localStorage.getItem('vfxType') || 'fire';
 
     function updateVfxDropdownUI() {
@@ -113,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX; mouse.y = e.clientY; mouse.moved = true;
+        mouse.x = e.clientX; mouse.y = e.clientY;
         if (currentVfx !== 'none') {
             for(let i = 0; i < 3; i++) particles.push(new Particle(mouse.x, mouse.y, currentVfx));
         }
@@ -189,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     animateVFX();
 
     // --- THEME TOGGLE LOGIC ---
+    let global3DMaterial = null;
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
     const currentTheme = localStorage.getItem('theme');
@@ -379,6 +372,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- MOBILE HAMBURGER MENU ---
     const hamburgerBtn = document.getElementById('hamburger-icon');
     const mainMenu = document.getElementById('main-menu');
+    const navLinks = document.querySelectorAll('.nav-link-item');
+
     if (hamburgerBtn && mainMenu) {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -387,6 +382,14 @@ document.addEventListener("DOMContentLoaded", () => {
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
         });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mainMenu.classList.remove('active');
+                hamburgerBtn.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
+        });
+
         document.addEventListener('click', (e) => {
             if (!mainMenu.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
                 mainMenu.classList.remove('active');
@@ -457,32 +460,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- VIDEO LIGHTBOX LOGIC ---
     const videoLightbox = document.getElementById('video-lightbox');
     const lightboxIframe = document.getElementById('lightbox-iframe');
+    const closeVideoModalBtn = document.querySelector('.close-video-modal');
     const carouselSlides = document.querySelectorAll('.carousel-slide');
 
     carouselSlides.forEach(slide => {
-        slide.addEventListener('click', (e) => {
+        slide.addEventListener('click', () => {
             const videoId = slide.getAttribute('data-video-id');
-            if (videoId) {
-                const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-                lightboxIframe.src = embedUrl;
+            if (videoId && videoLightbox) {
+                lightboxIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
                 videoLightbox.classList.add('active');
             }
         });
     });
 
-    if (videoLightbox) {
-        videoLightbox.addEventListener('click', (e) => {
-            if (e.target === videoLightbox) {
-                closeVideoLightbox();
-            }
-        });
+    function closeVideoModal() {
+        if (videoLightbox) {
+            videoLightbox.classList.remove('active');
+            setTimeout(() => { lightboxIframe.src = ""; }, 400);
+        }
     }
 
-    function closeVideoLightbox() {
-        videoLightbox.classList.remove('active');
-        setTimeout(() => {
-            lightboxIframe.src = ""; 
-        }, 400);
+    if (closeVideoModalBtn) closeVideoModalBtn.addEventListener('click', closeVideoModal);
+    if (videoLightbox) {
+        videoLightbox.addEventListener('click', (e) => {
+            if (e.target === videoLightbox) closeVideoModal();
+        });
     }
 
     // --- THREE.JS ASSET MODEL VIEWER MODAL LOGIC ---
@@ -515,13 +517,9 @@ document.addEventListener("DOMContentLoaded", () => {
         assetDirectionalLight1.position.set(5, 10, 7);
         assetScene.add(assetDirectionalLight1);
 
-        // Mouse Down (Left click = Rotate, Right click or Shift+Click = Pan)
         assetCanvas.addEventListener('mousedown', (e) => {
-            if (e.button === 2 || e.shiftKey) {
-                isPanning = true;
-            } else {
-                isDragging = true;
-            }
+            if (e.button === 2 || e.shiftKey) isPanning = true;
+            else isDragging = true;
             previousMousePosition = { x: e.clientX, y: e.clientY };
         });
 
@@ -543,7 +541,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.addEventListener('mouseup', () => { isDragging = false; isPanning = false; });
 
-        // Touch handlers for mobile
         assetCanvas.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) { 
                 isDragging = true; 
@@ -575,7 +572,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.addEventListener('touchend', () => { isDragging = false; isPanning = false; });
 
-        // Scroll to zoom
         assetCanvas.addEventListener('wheel', (e) => {
             e.preventDefault();
             assetCamera.position.z += e.deltaY * 0.005;
@@ -651,7 +647,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // HDRI Lighting Switcher
     if (hdriSelect) {
         hdriSelect.addEventListener('change', (e) => {
             const val = e.target.value;
