@@ -1,5 +1,29 @@
 document.addEventListener("DOMContentLoaded", () => {
     
+    // --- PRELOADER & HERO VIDEO SYNC LOGIC ---
+    const preloader = document.getElementById('preloader');
+    const heroVideo = document.getElementById('hero-video');
+
+    function removePreloader() {
+        if (preloader) {
+            preloader.classList.add('loaded');
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
+        }
+    }
+
+    window.addEventListener('load', () => {
+        if (heroVideo) {
+            if (heroVideo.readyState >= 3) {
+                removePreloader();
+            } else {
+                heroVideo.addEventListener('canplaythrough', removePreloader, { once: true });
+                setTimeout(removePreloader, 4000); 
+            }
+        } else {
+            removePreloader();
+        }
+    });
+
     // --- SCROLL-TRIGGERED POP-UP BUTTON FOR FEATURED PROJECT ---
     const projectWrapper = document.getElementById('project-wrapper');
     const popupBtnContainer = document.getElementById('popup-btn-container');
@@ -164,24 +188,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     animateVFX();
 
-    // --- THEME TOGGLES ---
+    // --- THEME TOGGLE LOGIC ---
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = themeToggleBtn.querySelector('i');
+    const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
     const currentTheme = localStorage.getItem('theme');
     let isBlueTheme = localStorage.getItem('blueTheme') === 'true';
 
     if (currentTheme === 'light') {
         document.body.classList.add('light-mode');
-        themeIcon.classList.replace('fa-sun', 'fa-moon');
+        if (themeIcon) themeIcon.classList.replace('fa-adjust', 'fa-moon');
     }
 
-    themeToggleBtn.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        let theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-        if (theme === 'light') themeIcon.classList.replace('fa-sun', 'fa-moon');
-        else themeIcon.classList.replace('fa-moon', 'fa-sun');
-        localStorage.setItem('theme', theme);
-    });
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            let theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            if (theme === 'light') {
+                if (themeIcon) themeIcon.classList.replace('fa-adjust', 'fa-moon');
+            } else {
+                if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-adjust');
+            }
+            localStorage.setItem('theme', theme);
+        });
+    }
 
     const secretLogoBtn = document.getElementById('secret-theme-trigger');
     function applySecretTheme(active) {
@@ -204,8 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- HERO VIDEO ---
-    const heroVideo = document.getElementById('hero-video');
+    // --- HERO VIDEO PLAYBACK CONTROL ---
     if (heroVideo) {
         heroVideo.currentTime = 0;
         heroVideo.play().catch(error => console.log("Autoplay blocked:", error));
@@ -425,5 +453,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
         chatSendBtn.addEventListener('click', handleUserMessage);
         chatUserInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
+    }
+
+    // --- VIDEO LIGHTBOX LOGIC ---
+    const videoLightbox = document.getElementById('video-lightbox');
+    const lightboxIframe = document.getElementById('lightbox-iframe');
+    const videoLightboxContent = document.getElementById('video-lightbox-content');
+    const videoRotateBtn = document.querySelector('.video-rotate-btn');
+    const carouselSlides = document.querySelectorAll('.carousel-slide');
+
+    // 1. Open Video Lightbox when clicking a slide
+    carouselSlides.forEach(slide => {
+        slide.addEventListener('click', (e) => {
+            const videoId = slide.getAttribute('data-video-id');
+            if (videoId) {
+                // Construct URL with autoplay
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+                lightboxIframe.src = embedUrl;
+                videoLightbox.classList.add('active');
+            }
+        });
+    });
+
+    // 2. Close Lightbox when clicking the dark background outside the video
+    if (videoLightbox) {
+        videoLightbox.addEventListener('click', (e) => {
+            if (e.target === videoLightbox) {
+                closeVideoLightbox();
+            }
+        });
+    }
+
+    // Function to safely close and reset the video player
+    function closeVideoLightbox() {
+        videoLightbox.classList.remove('active');
+        
+        // Wait for fade-out animation to finish, then kill the video & reset rotation
+        setTimeout(() => {
+            lightboxIframe.src = ""; 
+            videoLightboxContent.classList.remove('rotated');
+            videoRotateBtn.classList.remove('rotated');
+        }, 400);
+    }
+
+    // 3. Rotate Button Logic
+    if (videoRotateBtn && videoLightboxContent) {
+        videoRotateBtn.addEventListener('click', () => {
+            videoLightboxContent.classList.toggle('rotated');
+            videoRotateBtn.classList.toggle('rotated');
+        });
     }
 });

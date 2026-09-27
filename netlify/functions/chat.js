@@ -40,6 +40,7 @@ CRITICAL INSTRUCTIONS & INVENTORY:
    - Flame Thrower Mini Militia 3D Model (Free) -> https://vizlizer.gumroad.com/l/mpyftv
    - Porsche 911 Minnal Murali Edition 3D Model (Free) -> https://vizlizer.gumroad.com/l/nglukf
    - Dr Strange Portal Particle Simulation (Free) -> https://vizlizer.gumroad.com/l/lshub
+   - Electric Gun + Tesla Sphere Mini Militia 3D Model (Free) -> https://vizlizer.gumroad.com/l/wybdc
    If an available model is asked about, provide a friendly answer and its exact Gumroad link. If it's not on this list, politely state that it is not available yet!
 
 3. WEBSITE SECTIONS & NAVIGATION:
