@@ -23,7 +23,7 @@ exports.handler = async function(event, context) {
                 "X-Title": "VIZ LIZER Portfolio Chat"
             },
             body: JSON.stringify({
-                model: "deepseek/deepseek-chat-free:free", // Free tier model
+                model: "openrouter/free", // Uses OpenRouter's reliable free router gateway
                 messages: [
                     { 
                         role: "system", 
