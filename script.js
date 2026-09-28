@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- PRELOADER GATE ---
+    // --- PRELOADER & HERO VIDEO SYNC LOGIC ---
     const preloader = document.getElementById('preloader');
     const heroVideo = document.getElementById('hero-video');
 
     function removePreloader() {
         if (preloader) {
             preloader.classList.add('loaded');
-            setTimeout(() => { preloader.style.display = 'none'; }, 600);
+            setTimeout(() => { preloader.style.display = 'none'; }, 800);
         }
     }
 
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 removePreloader();
             } else {
                 heroVideo.addEventListener('canplaythrough', removePreloader, { once: true });
-                setTimeout(removePreloader, 3500); 
+                setTimeout(removePreloader, 4000); 
             }
         } else {
             removePreloader();
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const popupBtnContainer = document.getElementById('popup-btn-container');
 
     if (projectWrapper && popupBtnContainer) {
-        const observerOptions = { root: null, threshold: 0.5 };
+        const observerOptions = { root: null, threshold: 0.6 };
         const projectObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted || transitionOverlay.classList.contains('active')) {
+            transitionOverlay.classList.remove('active');
+        }
+    });
+
+    let global3DMaterial = null;
+
     // --- REALTIME VFX CURSOR ---
     const canvas = document.getElementById('vfx-canvas');
     const ctx = canvas.getContext('2d');
@@ -80,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     let particles = [];
-    let mouse = { x: width/2, y: height/2 };
+    let mouse = { x: width/2, y: height/2, moved: false };
     let currentVfx = localStorage.getItem('vfxType') || 'fire';
 
     function updateVfxDropdownUI() {
@@ -105,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX; mouse.y = e.clientY;
+        mouse.x = e.clientX; mouse.y = e.clientY; mouse.moved = true;
         if (currentVfx !== 'none') {
             for(let i = 0; i < 3; i++) particles.push(new Particle(mouse.x, mouse.y, currentVfx));
         }
@@ -181,7 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     animateVFX();
 
     // --- THEME TOGGLE LOGIC ---
-    let global3DMaterial = null;
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
     const currentTheme = localStorage.getItem('theme');
@@ -372,8 +379,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- MOBILE HAMBURGER MENU ---
     const hamburgerBtn = document.getElementById('hamburger-icon');
     const mainMenu = document.getElementById('main-menu');
-    const navLinks = document.querySelectorAll('.nav-link-item');
-
     if (hamburgerBtn && mainMenu) {
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -382,14 +387,6 @@ document.addEventListener("DOMContentLoaded", () => {
             icon.classList.toggle('fa-bars');
             icon.classList.toggle('fa-times');
         });
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mainMenu.classList.remove('active');
-                hamburgerBtn.querySelector('i').classList.replace('fa-times', 'fa-bars');
-            });
-        });
-
         document.addEventListener('click', (e) => {
             if (!mainMenu.contains(e.target) && e.target !== hamburgerBtn && !hamburgerBtn.contains(e.target)) {
                 mainMenu.classList.remove('active');
@@ -440,6 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const msgDiv = document.createElement('div');
             msgDiv.className = `chat-message ${className}`;
             
+            // Converts Markdown links [Text](URL) and raw URLs into clickable HTML links
             let formattedText = text
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--accent-color); text-decoration: underline;">$1</a>')
                 .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent-color); text-decoration: underline;">$1</a>');
@@ -460,209 +458,49 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- VIDEO LIGHTBOX LOGIC ---
     const videoLightbox = document.getElementById('video-lightbox');
     const lightboxIframe = document.getElementById('lightbox-iframe');
-    const closeVideoModalBtn = document.querySelector('.close-video-modal');
+    const videoLightboxContent = document.getElementById('video-lightbox-content');
+    const videoRotateBtn = document.querySelector('.video-rotate-btn');
     const carouselSlides = document.querySelectorAll('.carousel-slide');
 
+    // 1. Open Video Lightbox when clicking a slide
     carouselSlides.forEach(slide => {
-        slide.addEventListener('click', () => {
+        slide.addEventListener('click', (e) => {
             const videoId = slide.getAttribute('data-video-id');
-            if (videoId && videoLightbox) {
-                lightboxIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+            if (videoId) {
+                // Construct URL with autoplay
+                const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+                lightboxIframe.src = embedUrl;
                 videoLightbox.classList.add('active');
             }
         });
     });
 
-    function closeVideoModal() {
-        if (videoLightbox) {
-            videoLightbox.classList.remove('active');
-            setTimeout(() => { lightboxIframe.src = ""; }, 400);
-        }
-    }
-
-    if (closeVideoModalBtn) closeVideoModalBtn.addEventListener('click', closeVideoModal);
+    // 2. Close Lightbox when clicking the dark background outside the video
     if (videoLightbox) {
         videoLightbox.addEventListener('click', (e) => {
-            if (e.target === videoLightbox) closeVideoModal();
+            if (e.target === videoLightbox) {
+                closeVideoLightbox();
+            }
         });
     }
 
-    // --- THREE.JS ASSET MODEL VIEWER MODAL LOGIC ---
-    const modelModal = document.getElementById('model-viewer-modal');
-    const previewButtons = document.querySelectorAll('.preview-3d-btn');
-    const closeModelModalBtn = document.querySelector('.close-model-modal');
-    const loadingOverlay = document.getElementById('model-loading-overlay');
-    const hdriSelect = document.getElementById('hdri-select');
-    const assetCanvas = document.getElementById('asset-3d-canvas');
-
-    let assetScene, assetCamera, assetRenderer, activeModel = null, assetAnimationId = null;
-    let isDragging = false, isPanning = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    let assetAmbientLight, assetDirectionalLight1;
-
-    function initAssetViewer() {
-        if (!assetCanvas) return;
-        assetScene = new THREE.Scene();
-        assetCamera = new THREE.PerspectiveCamera(45, assetCanvas.clientWidth / assetCanvas.clientHeight, 0.1, 1000);
-        assetCamera.position.set(0, 0, 5);
-
-        assetRenderer = new THREE.WebGLRenderer({ canvas: assetCanvas, antialias: true, alpha: true });
-        assetRenderer.setSize(assetCanvas.clientWidth, assetCanvas.clientHeight);
-        assetRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        assetAmbientLight = new THREE.AmbientLight(0xffffff, 1.2);
-        assetScene.add(assetAmbientLight);
-
-        assetDirectionalLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
-        assetDirectionalLight1.position.set(5, 10, 7);
-        assetScene.add(assetDirectionalLight1);
-
-        assetCanvas.addEventListener('mousedown', (e) => {
-            if (e.button === 2 || e.shiftKey) isPanning = true;
-            else isDragging = true;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
-
-        assetCanvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        assetCanvas.addEventListener('mousemove', (e) => {
-            let deltaX = e.clientX - previousMousePosition.x;
-            let deltaY = e.clientY - previousMousePosition.y;
-
-            if (isDragging && activeModel) {
-                activeModel.rotation.y += deltaX * 0.008;
-                activeModel.rotation.x += deltaY * 0.008;
-            } else if (isPanning && activeModel) {
-                activeModel.position.x += deltaX * 0.003;
-                activeModel.position.y -= deltaY * 0.003;
-            }
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
-
-        window.addEventListener('mouseup', () => { isDragging = false; isPanning = false; });
-
-        assetCanvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) { 
-                isDragging = true; 
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; 
-            } else if (e.touches.length === 2) {
-                isPanning = true;
-                previousMousePosition = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
-            }
-        });
-
-        assetCanvas.addEventListener('touchmove', (e) => {
-            if (!activeModel) return;
-            if (isDragging && e.touches.length === 1) {
-                let deltaX = e.touches[0].clientX - previousMousePosition.x;
-                let deltaY = e.touches[0].clientY - previousMousePosition.y;
-                activeModel.rotation.y += deltaX * 0.008;
-                activeModel.rotation.x += deltaY * 0.008;
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            } else if (isPanning && e.touches.length === 2) {
-                let currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                let deltaX = currentX - previousMousePosition.x;
-                let deltaY = currentY - previousMousePosition.y;
-                activeModel.position.x += deltaX * 0.003;
-                activeModel.position.y -= deltaY * 0.003;
-                previousMousePosition = { x: currentX, y: currentY };
-            }
-        });
-
-        window.addEventListener('touchend', () => { isDragging = false; isPanning = false; });
-
-        assetCanvas.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            assetCamera.position.z += e.deltaY * 0.005;
-            assetCamera.position.z = Math.max(1, Math.min(15, assetCamera.position.z));
-        }, { passive: false });
-
-        window.addEventListener('resize', () => {
-            if (!assetCanvas || !assetRenderer) return;
-            const container = assetCanvas.parentElement;
-            assetCamera.aspect = container.clientWidth / container.clientHeight;
-            assetCamera.updateProjectionMatrix();
-            assetRenderer.setSize(container.clientWidth, container.clientHeight);
-        });
+    // Function to safely close and reset the video player
+    function closeVideoLightbox() {
+        videoLightbox.classList.remove('active');
+        
+        // Wait for fade-out animation to finish, then kill the video & reset rotation
+        setTimeout(() => {
+            lightboxIframe.src = ""; 
+            videoLightboxContent.classList.remove('rotated');
+            videoRotateBtn.classList.remove('rotated');
+        }, 400);
     }
 
-    function loadAssetModel(modelPath) {
-        if (!assetScene) initAssetViewer();
-        if (loadingOverlay) loadingOverlay.classList.remove('hide');
-        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
-
-        const loader = new THREE.GLTFLoader();
-        loader.load(modelPath, (gltf) => {
-            activeModel = gltf.scene;
-            
-            const box = new THREE.Box3().setFromObject(activeModel);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 3.2 / maxDim;
-            
-            activeModel.scale.set(scale, scale, scale);
-            box.setFromObject(activeModel);
-            box.getCenter(center);
-            activeModel.position.sub(center);
-
-            assetScene.add(activeModel);
-            if (loadingOverlay) loadingOverlay.classList.add('hide');
-        }, undefined, (error) => {
-            console.error("Error loading GLB:", error);
-            if (loadingOverlay) loadingOverlay.classList.add('hide');
-            alert("Could not load 3D model. Make sure " + modelPath + " is placed in your project root folder.");
-        });
-
-        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
-        function animateAsset() {
-            assetAnimationId = requestAnimationFrame(animateAsset);
-            assetRenderer.render(assetScene, assetCamera);
-        }
-        animateAsset();
-    }
-
-    previewButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const modelFile = btn.getAttribute('data-model');
-            if (modelModal) {
-                modelModal.classList.add('active');
-                loadAssetModel(modelFile);
-            }
-        });
-    });
-
-    function closeAssetModal() {
-        if (modelModal) modelModal.classList.remove('active');
-        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
-        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
-    }
-
-    if (closeModelModalBtn) closeModelModalBtn.addEventListener('click', closeAssetModal);
-    if (modelModal) {
-        modelModal.addEventListener('click', (e) => {
-            if (e.target === modelModal) closeAssetModal();
-        });
-    }
-
-    if (hdriSelect) {
-        hdriSelect.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if (val === 'studio') {
-                assetAmbientLight.intensity = 1.2;
-                assetDirectionalLight1.intensity = 2.5;
-                assetDirectionalLight1.color.setHex(0xffffff);
-            } else if (val === 'sunset') {
-                assetAmbientLight.intensity = 0.8;
-                assetDirectionalLight1.intensity = 3.0;
-                assetDirectionalLight1.color.setHex(0xff7b00);
-            } else if (val === 'night') {
-                assetAmbientLight.intensity = 0.3;
-                assetDirectionalLight1.intensity = 2.0;
-                assetDirectionalLight1.color.setHex(0x00a8ff);
-            }
+    // 3. Rotate Button Logic
+    if (videoRotateBtn && videoLightboxContent) {
+        videoRotateBtn.addEventListener('click', () => {
+            videoLightboxContent.classList.toggle('rotated');
+            videoRotateBtn.classList.toggle('rotated');
         });
     }
 });
