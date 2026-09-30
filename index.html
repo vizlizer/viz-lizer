@@ -14,6 +14,10 @@
     <script src="https://gumroad.com/js/gumroad.js"></script>
     <!-- Three.js for Full-Page 3D Background Model -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js GLTFLoader for Local .glb Files -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2622477482330900" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -39,11 +43,11 @@
         </div>
         
         <div class="nav-links">
-            <!-- Main Links (Collapses into Hamburger on Mobile) -->
+            <!-- Main Links (Collapses into Hamburger on Mobile/Tablet) -->
             <div class="main-menu" id="main-menu">
-                <a href="#portfolio">Projects</a>
-                <a href="#store">Asset Store</a>
-                <a href="#about">About</a>
+                <a href="#portfolio" class="nav-link-item">Projects</a>
+                <a href="#store" class="nav-link-item">Asset Store</a>
+                <a href="#about" class="nav-link-item">About</a>
                 
                 <div class="nav-dropdown contact-dropdown">
                     <span class="btn-outline dropbtn">Contact</span>
@@ -65,7 +69,7 @@
                         <i class="fas fa-cube"></i>
                     </button>
                     <div class="dropdown-content right-align">
-                        <a href="#" class="bg-option" data-bg="shape1">🕸️ Wire Icosahedron</a>
+                        <a href="#" class="bg-option" data-bg="shape1">🕸 Wire Icosahedron</a>
                         <a href="#" class="bg-option" data-bg="shape2">🥨 Wireframe Knot</a>
                         <a href="#" class="bg-option" data-bg="shape3">♾️ Solid Infinity Knot</a>
                         <a href="#" class="bg-option" data-bg="shape4">🍩 Neon Rings</a>
@@ -93,7 +97,7 @@
                     <i class="fas fa-adjust"></i>
                 </button>
 
-                <!-- Hamburger Button (Visible only on mobile) -->
+                <!-- Hamburger Button (Visible only on mobile/tablet) -->
                 <button id="hamburger-icon" class="theme-btn hamburger-btn" aria-label="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -319,6 +323,8 @@
 
     <!-- VIDEO POPUP LIGHTBOX (Plays YouTube Video on Click) -->
     <div id="video-lightbox" class="video-lightbox">
+        <!-- Close Button Added Back -->
+        <button class="close-video-modal" aria-label="Close Video">&times;</button>
         <div class="video-lightbox-container">
             <!-- Rotate Button -->
             <button class="video-rotate-btn" aria-label="Rotate Frame" title="Rotate 90°">
