@@ -418,7 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const typingId = appendMessage('Thinking...', 'bot-msg typing');
 
             try {
-                const response = await fetch('/.netlify/functions/chat', {
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text })
@@ -457,7 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- VIDEO LIGHTBOX LOGIC ---
     const videoLightbox = document.getElementById('video-lightbox');
-    const lightboxIframe = document.getElementById('lightbox-iframe');
+    let lightboxIframe = document.getElementById('lightbox-iframe');
     const videoLightboxContent = document.getElementById('video-lightbox-content');
     const videoRotateBtn = document.querySelector('.video-rotate-btn');
     const carouselSlides = document.querySelectorAll('.carousel-slide');
@@ -466,10 +466,18 @@ document.addEventListener("DOMContentLoaded", () => {
     carouselSlides.forEach(slide => {
         slide.addEventListener('click', (e) => {
             const videoId = slide.getAttribute('data-video-id');
-            if (videoId) {
-                // Construct URL with autoplay
-                const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
-                lightboxIframe.src = embedUrl;
+            if (videoId && videoLightbox) {
+                // Prevent browser history stack filling up by replacing the DOM node
+                const newIframe = document.createElement('iframe');
+                newIframe.id = 'lightbox-iframe';
+                newIframe.title = 'Cinematic Video';
+                newIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                newIframe.setAttribute('allowfullscreen', 'true');
+                newIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
+                
+                videoLightboxContent.replaceChild(newIframe, lightboxIframe);
+                lightboxIframe = newIframe;
+                
                 videoLightbox.classList.add('active');
             }
         });
@@ -486,14 +494,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to safely close and reset the video player
     function closeVideoLightbox() {
-        videoLightbox.classList.remove('active');
-        
-        // Wait for fade-out animation to finish, then kill the video & reset rotation
-        setTimeout(() => {
-            lightboxIframe.src = ""; 
-            videoLightboxContent.classList.remove('rotated');
-            videoRotateBtn.classList.remove('rotated');
-        }, 400);
+        if (videoLightbox) {
+            videoLightbox.classList.remove('active');
+            
+            // Wait for fade-out animation to finish, then kill the video & reset rotation
+            setTimeout(() => {
+                // Recreate empty iframe to avoid history push
+                const newIframe = document.createElement('iframe');
+                newIframe.id = 'lightbox-iframe';
+                newIframe.title = 'Cinematic Video';
+                newIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                newIframe.setAttribute('allowfullscreen', 'true');
+                newIframe.src = "";
+                
+                videoLightboxContent.replaceChild(newIframe, lightboxIframe);
+                lightboxIframe = newIframe;
+
+                if (videoLightboxContent) videoLightboxContent.classList.remove('rotated');
+                if (videoRotateBtn) videoRotateBtn.classList.remove('rotated');
+            }, 400);
+        }
     }
 
     // 3. Rotate Button Logic
@@ -501,6 +521,185 @@ document.addEventListener("DOMContentLoaded", () => {
         videoRotateBtn.addEventListener('click', () => {
             videoLightboxContent.classList.toggle('rotated');
             videoRotateBtn.classList.toggle('rotated');
+        });
+    }
+
+    // --- THREE.JS ASSET MODEL VIEWER MODAL LOGIC ---
+    const modelModal = document.getElementById('model-viewer-modal');
+    const previewButtons = document.querySelectorAll('.preview-3d-btn');
+    const closeModelModalBtn = document.querySelector('.close-model-modal');
+    const loadingOverlay = document.getElementById('model-loading-overlay');
+    const hdriSelect = document.getElementById('hdri-select');
+    const assetCanvas = document.getElementById('asset-3d-canvas');
+
+    let assetScene, assetCamera, assetRenderer, activeModel = null, assetAnimationId = null;
+    let isDragging = false, isPanning = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let assetAmbientLight, assetDirectionalLight1;
+
+    function initAssetViewer() {
+        if (!assetCanvas) return;
+        assetScene = new THREE.Scene();
+        assetCamera = new THREE.PerspectiveCamera(45, assetCanvas.clientWidth / assetCanvas.clientHeight, 0.1, 1000);
+        assetCamera.position.set(0, 0, 5);
+
+        assetRenderer = new THREE.WebGLRenderer({ canvas: assetCanvas, antialias: true, alpha: true });
+        assetRenderer.setSize(assetCanvas.clientWidth, assetCanvas.clientHeight);
+        assetRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        assetAmbientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        assetScene.add(assetAmbientLight);
+
+        assetDirectionalLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
+        assetDirectionalLight1.position.set(5, 10, 7);
+        assetScene.add(assetDirectionalLight1);
+
+        assetCanvas.addEventListener('mousedown', (e) => {
+            if (e.button === 2 || e.shiftKey) isPanning = true;
+            else isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        assetCanvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        assetCanvas.addEventListener('mousemove', (e) => {
+            let deltaX = e.clientX - previousMousePosition.x;
+            let deltaY = e.clientY - previousMousePosition.y;
+
+            if (isDragging && activeModel) {
+                activeModel.rotation.y += deltaX * 0.008;
+                activeModel.rotation.x += deltaY * 0.008;
+            } else if (isPanning && activeModel) {
+                activeModel.position.x += deltaX * 0.003;
+                activeModel.position.y -= deltaY * 0.003;
+            }
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => { isDragging = false; isPanning = false; });
+
+        assetCanvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) { 
+                isDragging = true; 
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; 
+            } else if (e.touches.length === 2) {
+                isPanning = true;
+                previousMousePosition = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+            }
+        });
+
+        assetCanvas.addEventListener('touchmove', (e) => {
+            if (!activeModel) return;
+            if (isDragging && e.touches.length === 1) {
+                let deltaX = e.touches[0].clientX - previousMousePosition.x;
+                let deltaY = e.touches[0].clientY - previousMousePosition.y;
+                activeModel.rotation.y += deltaX * 0.008;
+                activeModel.rotation.x += deltaY * 0.008;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            } else if (isPanning && e.touches.length === 2) {
+                let currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                let deltaX = currentX - previousMousePosition.x;
+                let deltaY = currentY - previousMousePosition.y;
+                activeModel.position.x += deltaX * 0.003;
+                activeModel.position.y -= deltaY * 0.003;
+                previousMousePosition = { x: currentX, y: currentY };
+            }
+        });
+
+        window.addEventListener('touchend', () => { isDragging = false; isPanning = false; });
+
+        assetCanvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            assetCamera.position.z += e.deltaY * 0.005;
+            assetCamera.position.z = Math.max(1, Math.min(15, assetCamera.position.z));
+        }, { passive: false });
+
+        window.addEventListener('resize', () => {
+            if (!assetCanvas || !assetRenderer) return;
+            const container = assetCanvas.parentElement;
+            assetCamera.aspect = container.clientWidth / container.clientHeight;
+            assetCamera.updateProjectionMatrix();
+            assetRenderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    }
+
+    function loadAssetModel(modelPath) {
+        if (!assetScene) initAssetViewer();
+        if (loadingOverlay) loadingOverlay.classList.remove('hide');
+        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
+
+        const loader = new THREE.GLTFLoader();
+        loader.load(modelPath, (gltf) => {
+            activeModel = gltf.scene;
+            
+            const box = new THREE.Box3().setFromObject(activeModel);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 3.2 / maxDim;
+            
+            activeModel.scale.set(scale, scale, scale);
+            box.setFromObject(activeModel);
+            box.getCenter(center);
+            activeModel.position.sub(center);
+
+            assetScene.add(activeModel);
+            if (loadingOverlay) loadingOverlay.classList.add('hide');
+        }, undefined, (error) => {
+            console.error("Error loading GLB:", error);
+            if (loadingOverlay) loadingOverlay.classList.add('hide');
+            alert("Could not load 3D model. Make sure " + modelPath + " is placed in your project root folder.");
+        });
+
+        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
+        function animateAsset() {
+            assetAnimationId = requestAnimationFrame(animateAsset);
+            assetRenderer.render(assetScene, assetCamera);
+        }
+        animateAsset();
+    }
+
+    previewButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const modelFile = btn.getAttribute('data-model');
+            if (modelModal) {
+                modelModal.classList.add('active');
+                loadAssetModel(modelFile);
+            }
+        });
+    });
+
+    function closeAssetModal() {
+        if (modelModal) modelModal.classList.remove('active');
+        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
+        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
+    }
+
+    if (closeModelModalBtn) closeModelModalBtn.addEventListener('click', closeAssetModal);
+    if (modelModal) {
+        modelModal.addEventListener('click', (e) => {
+            if (e.target === modelModal) closeAssetModal();
+        });
+    }
+
+    if (hdriSelect) {
+        hdriSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'studio') {
+                assetAmbientLight.intensity = 1.2;
+                assetDirectionalLight1.intensity = 2.5;
+                assetDirectionalLight1.color.setHex(0xffffff);
+            } else if (val === 'sunset') {
+                assetAmbientLight.intensity = 0.8;
+                assetDirectionalLight1.intensity = 3.0;
+                assetDirectionalLight1.color.setHex(0xff7b00);
+            } else if (val === 'night') {
+                assetAmbientLight.intensity = 0.3;
+                assetDirectionalLight1.intensity = 2.0;
+                assetDirectionalLight1.color.setHex(0x00a8ff);
+            }
         });
     }
 });
