@@ -1321,3 +1321,111 @@ footer h3 {
         transform: rotate(-90deg) scale(0.65);
     }
 }
+
+/* --- CUSTOM ASSET STORE SORT DROPDOWN --- */
+.custom-sort-wrapper {
+    position: relative;
+    user-select: none;
+    min-width: 170px;
+    font-family: 'Inter', sans-serif;
+    z-index: 40;
+}
+
+.custom-sort-header {
+    background-color: var(--surface-color);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-sort-header:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.custom-sort-wrapper.open .custom-sort-header {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 12px rgba(255, 87, 34, 0.3);
+}
+
+.arrow-icon {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-left: 10px;
+}
+
+.custom-sort-wrapper.open .arrow-icon {
+    transform: rotate(180deg);
+    color: var(--accent-color);
+}
+
+.custom-sort-options {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 100%;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    overflow: hidden;
+    z-index: 50;
+    
+    /* Smooth Dropdown Animation */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15px) scale(0.95);
+    transform-origin: top center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-sort-wrapper.open .custom-sort-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.sort-option {
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sort-option:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sort-option:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    color: var(--text-main);
+}
+
+.sort-option.active {
+    color: var(--accent-color);
+    background-color: rgba(255, 87, 34, 0.05); /* Will tint with orange naturally */
+}
+
+/* Adjust for mobile to take full width */
+@media (max-width: 768px) {
+    .store-controls-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .custom-sort-wrapper {
+        width: 100%;
+    }
+}

@@ -10,8 +10,7 @@
     <!-- Search Engine Optimization (SEO) -->
     <meta name="keywords" content="vizlizer, viz_lizer, VIZ LIZER, Rahul Raj, freelance 3D artist, VFX artist UAE, free 3d models, free 3d assets, 3d animation, download GLB assets, Houdini simulations, Blender 3D modeling, Unreal Engine environments, Mini Militia 3D models, free 3D weapon models, Oggy house 3D model, Premier Padmini 3D, Minnal Murali Porsche 3D, Dr Strange portal VFX, procedural simulations">
     <meta name="description" content="Portfolio and 3D Asset Store of VIZ LIZER (Rahul Raj). Freelance 3D artist in the UAE specializing in Houdini, Blender, procedural simulations, real-time VFX, 3D animation, and free downloadable 3D models and assets.">
-    <!-- CACHE BUSTING ADDED HERE (?v=2) -->
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=3">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
@@ -42,14 +41,12 @@
 
     <!-- Navigation -->
     <nav>
-        <!-- SECRET THEME TRIGGER ADDED TO LOGO -->
         <div class="logo" id="secret-theme-trigger" title="Toggle Secret Theme">
             <img src="Logo.png" alt="Viz Lizer Logo" class="logo-img">
             <span>VIZ LIZER</span>
         </div>
         
         <div class="nav-links">
-            <!-- Main Links (Collapses into Hamburger on Mobile/Tablet) -->
             <div class="main-menu" id="main-menu">
                 <a href="#portfolio" class="nav-link-item">Projects</a>
                 <a href="#store" class="nav-link-item">Asset Store</a>
@@ -67,9 +64,7 @@
                 </div>
             </div>
 
-            <!-- Utility Icons (Always Visible) -->
             <div class="utility-icons">
-                <!-- 3D Background Settings Dropdown -->
                 <div class="nav-dropdown">
                     <button class="theme-btn" aria-label="3D Background Settings" title="Change 3D Background">
                         <i class="fas fa-cube"></i>
@@ -83,7 +78,6 @@
                     </div>
                 </div>
 
-                <!-- Cursor VFX Settings Dropdown -->
                 <div class="nav-dropdown vfx-dropdown">
                     <button class="theme-btn" aria-label="Cursor VFX Settings" title="Change Cursor Effects">
                         <i class="fas fa-wand-magic-sparkles"></i>
@@ -98,12 +92,10 @@
                     </div>
                 </div>
 
-                <!-- Light/Dark Toggle Button -->
                 <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme" title="Toggle Light/Dark Mode">
                     <i class="fas fa-adjust"></i>
                 </button>
 
-                <!-- Hamburger Button (Visible only on mobile/tablet) -->
                 <button id="hamburger-icon" class="theme-btn hamburger-btn" aria-label="Menu">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -190,12 +182,28 @@
                 <input type="text" id="asset-search" placeholder="Search assets...">
             </div>
 
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="all">ALL</button>
-                <button class="filter-btn" data-filter="free">FREE ONLY</button>
-                <button class="filter-btn" data-filter="models">3D MODELS</button>
-                <button class="filter-btn" data-filter="projects">PROJECT FILES</button>
-                <button class="filter-btn" data-filter="vfx">VFX & SIM</button>
+            <div class="store-controls-right" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div class="filter-container">
+                    <button class="filter-btn active" data-filter="all">ALL</button>
+                    <button class="filter-btn" data-filter="free">FREE ONLY</button>
+                    <button class="filter-btn" data-filter="models">3D MODELS</button>
+                    <button class="filter-btn" data-filter="projects">PROJECT FILES</button>
+                    <button class="filter-btn" data-filter="vfx">VFX & SIM</button>
+                </div>
+
+                <!-- CUSTOM SORT DROPDOWN -->
+                <div class="custom-sort-wrapper" id="custom-sort-wrapper">
+                    <div class="custom-sort-header" id="custom-sort-header">
+                        <span id="custom-sort-label">Old to New</span>
+                        <i class="fas fa-chevron-down arrow-icon"></i>
+                    </div>
+                    <div class="custom-sort-options" id="custom-sort-options">
+                        <div class="sort-option" data-value="new-old">New to Old</div>
+                        <div class="sort-option active" data-value="old-new">Old to New</div>
+                        <div class="sort-option" data-value="name-asc">Name: A to Z</div>
+                        <div class="sort-option" data-value="name-desc">Name: Z to A</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -307,6 +315,42 @@
                     <a href="https://vizlizer.gumroad.com/l/wybdc" class="btn-gumroad">Download</a>
                 </div>
             </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="mark.png" alt="Mark Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Mark Cockroach (Oggy) 3D Model</h5>
+                    <p class="format">3D Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/ymivh" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="joey.png" alt="Joey Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Joey Cockroach (Oggy) 3D Model</h5>
+                    <p class="format">3D Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/vaurn" class="btn-gumroad">Download</a>
+                </div>
+            </div>
+
+            <div class="store-card free models" data-category="free models">
+                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                    <img src="dee_dee.png" alt="Dee Dee Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="card-details">
+                    <span class="badge free">FREE</span>
+                    <h5>Dee Dee Cockroach (Oggy) 3D Model</h5>
+                    <p class="format">3D Model</p>
+                    <a href="https://vizlizer.gumroad.com/l/nosvzr" class="btn-gumroad">Download</a>
+                </div>
+            </div>
             
         </div>
     </section>
@@ -331,7 +375,6 @@
     <section class="section" style="text-align: center; padding: 20px 5%;">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2622477482330900"
              crossorigin="anonymous"></script>
-        <!-- Homepage Banner -->
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-2622477482330900"
@@ -402,10 +445,8 @@
         <p class="gumroad-secure">Securely powered by Gumroad.</p>
     </footer>
 
-    <!-- Official Buy Me a Coffee Popup Widget Script -->
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="vizlizer" data-description="Support me on Buy me a coffee!" data-message="If my assets helped you, consider buying me a coffee! ☕" data-color="#ff5722" data-position="Right" data-x_margin="30" data-y_margin="30"></script>
 
-    <!-- CACHE BUSTING ADDED HERE (?v=2) -->
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>

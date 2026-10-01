@@ -1,17 +1,15 @@
-exports.handler = async function(event, context) {
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Method Not Allowed' };
-    }
+export async function onRequestPost(context) {
+    const { request, env } = context;
 
     try {
-        const { message } = JSON.parse(event.body);
-        const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+        const { message } = await request.json();
+        const OPENROUTER_API_KEY = env.OPENROUTER_API_KEY;
 
         if (!OPENROUTER_API_KEY) {
-            return { 
-                statusCode: 500, 
-                body: JSON.stringify({ error: "API key not configured on server environment." }) 
-            };
+            return new Response(JSON.stringify({ error: "API key not configured on server environment." }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" }
+            });
         }
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -41,6 +39,9 @@ CRITICAL INSTRUCTIONS & INVENTORY:
    - Porsche 911 Minnal Murali Edition 3D Model (Free) -> https://vizlizer.gumroad.com/l/nglukf
    - Dr Strange Portal Particle Simulation (Free) -> https://vizlizer.gumroad.com/l/lshub
    - Electric Gun + Tesla Sphere Mini Militia 3D Model (Free) -> https://vizlizer.gumroad.com/l/wybdc
+   - Mark Cockroach (Oggy) 3D Model (Free) -> https://vizlizer.gumroad.com/l/ymivh
+   - Joey Cockroach (Oggy) 3D Model (Free) -> https://vizlizer.gumroad.com/l/vaurn
+   - Dee Dee Cockroach (Oggy) 3D Model (Free) -> https://vizlizer.gumroad.com/l/nosvzr
    If an available model is asked about, provide a friendly answer and its exact Gumroad link. If it's not on this list, politely state that it is not available yet!
 
 3. WEBSITE SECTIONS & NAVIGATION:
@@ -60,23 +61,23 @@ Answer visitors helpfully, concisely, and accurately.`
         const data = await response.json();
 
         if (!response.ok) {
-            return { 
-                statusCode: response.status, 
-                body: JSON.stringify({ error: data.error?.message || "OpenRouter API error" }) 
-            };
+            return new Response(JSON.stringify({ error: data.error?.message || "OpenRouter API error" }), {
+                status: response.status,
+                headers: { "Content-Type": "application/json" }
+            });
         }
 
         const reply = data.choices[0].message.content;
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ reply })
-        };
+        return new Response(JSON.stringify({ reply }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" }
+        });
 
     } catch (error) {
-        return { 
-            statusCode: 500, 
-            body: JSON.stringify({ error: error.message }) 
-        };
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
     }
-};
+}

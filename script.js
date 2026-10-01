@@ -345,36 +345,114 @@ document.addEventListener("DOMContentLoaded", () => {
         startSlideTimer();
     }
 
-    // --- ASSET STORE FILTERS & SEARCH ---
+    // --- ASSET STORE FILTERS, SEARCH & CUSTOM SORTING ---
     const filterButtons = document.querySelectorAll(".filter-btn");
-    const storeCards = document.querySelectorAll(".store-card");
+    const storeGrid = document.querySelector(".store-grid");
     const searchInput = document.getElementById("asset-search");
     let currentCategoryFilter = "all";
+    
+    // FIX: Take a permanent snapshot of the original "Old to New" HTML order on load.
+    const originalCardsOrder = storeGrid ? Array.from(storeGrid.querySelectorAll(".store-card")) : [];
 
-    function filterAssets() {
+    // Custom Sort Elements
+    const customSortWrapper = document.getElementById("custom-sort-wrapper");
+    const customSortHeader = document.getElementById("custom-sort-header");
+    const customSortLabel = document.getElementById("custom-sort-label");
+    const sortOptions = document.querySelectorAll(".sort-option");
+    let currentSortValue = "old-new";
+
+    // Toggle custom sort dropdown
+    if (customSortHeader) {
+        customSortHeader.addEventListener("click", (e) => {
+            e.stopPropagation();
+            customSortWrapper.classList.toggle("open");
+        });
+    }
+
+    // Handle sort option clicks
+    sortOptions.forEach(option => {
+        option.addEventListener("click", (e) => {
+            e.stopPropagation();
+            
+            // Update UI
+            sortOptions.forEach(opt => opt.classList.remove("active"));
+            option.classList.add("active");
+            customSortLabel.innerText = option.innerText;
+            
+            // Close dropdown
+            customSortWrapper.classList.remove("open");
+            
+            // Trigger actual sorting
+            currentSortValue = option.getAttribute("data-value");
+            filterAndSortAssets();
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+        if (customSortWrapper && !customSortWrapper.contains(e.target)) {
+            customSortWrapper.classList.remove("open");
+        }
+    });
+
+    // The core filtering and sorting function
+    function filterAndSortAssets() {
+        if (!storeGrid) return;
         const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-        storeCards.forEach(card => {
+        
+        // Grab the live array to manipulate, but we will sort it against the immutable "originalCardsOrder"
+        const liveCardsArray = Array.from(storeGrid.querySelectorAll(".store-card"));
+
+        // 1. Filter visibility
+        liveCardsArray.forEach(card => {
             const categories = card.getAttribute("data-category").split(" ");
             const title = card.querySelector("h5").innerText.toLowerCase();
             const matchesCategory = (currentCategoryFilter === "all" || categories.includes(currentCategoryFilter));
             const matchesSearch = title.includes(searchTerm);
+            
             if (matchesCategory && matchesSearch) {
                 card.classList.remove("hide");
             } else {
                 card.classList.add("hide");
             }
         });
+
+        // 2. Sort cards array
+        liveCardsArray.sort((a, b) => {
+            const titleA = a.querySelector("h5").innerText.toLowerCase();
+            const titleB = b.querySelector("h5").innerText.toLowerCase();
+
+            if (currentSortValue === "name-asc") {
+                return titleA.localeCompare(titleB);
+            } else if (currentSortValue === "name-desc") {
+                return titleB.localeCompare(titleA);
+            } else if (currentSortValue === "new-old") {
+                // Relies on the exact immutable order snapshot taken at load
+                return originalCardsOrder.indexOf(b) - originalCardsOrder.indexOf(a);
+            } else { 
+                // "old-new"
+                return originalCardsOrder.indexOf(a) - originalCardsOrder.indexOf(b);
+            }
+        });
+
+        // Re-append sorted cards into the grid container smoothly
+        liveCardsArray.forEach(card => storeGrid.appendChild(card));
     }
 
+    // Connect filters to the system
     filterButtons.forEach(button => {
         button.addEventListener("click", () => {
             filterButtons.forEach(btn => btn.classList.remove("active"));
             button.classList.add("active");
             currentCategoryFilter = button.getAttribute("data-filter");
-            filterAssets();
+            filterAndSortAssets();
         });
     });
-    if (searchInput) searchInput.addEventListener("input", filterAssets);
+
+    // Connect search bar
+    if (searchInput) {
+        searchInput.addEventListener("input", filterAndSortAssets);
+    }
 
     // --- MOBILE HAMBURGER MENU ---
     const hamburgerBtn = document.getElementById('hamburger-icon');
