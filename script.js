@@ -395,13 +395,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- VIZ AI CHATBOT INTERACTION LOGIC ---
+    // --- VIZ AI CHATBOT & VOICE INPUT INTERACTION LOGIC ---
     const chatToggleBtn = document.getElementById('chat-toggle-btn');
     const chatWindow = document.getElementById('chat-window');
     const chatCloseBtn = document.getElementById('chat-close-btn');
     const chatSendBtn = document.getElementById('chat-send-btn');
     const chatUserInput = document.getElementById('chat-user-input');
     const chatMessages = document.getElementById('chat-messages');
+    const chatMicBtn = document.getElementById('chat-mic-btn');
 
     if (chatToggleBtn && chatWindow) {
         chatToggleBtn.addEventListener('click', () => {
@@ -409,6 +410,49 @@ document.addEventListener("DOMContentLoaded", () => {
             if (chatWindow.classList.contains('active')) chatUserInput.focus();
         });
         chatCloseBtn.addEventListener('click', () => chatWindow.classList.remove('active'));
+
+        // SPEECH-TO-TEXT VOICE INPUT SETUP
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition && chatMicBtn) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            chatMicBtn.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.log("Recognition already started");
+                }
+            });
+
+            recognition.addEventListener('start', () => {
+                chatMicBtn.classList.add('listening');
+                chatUserInput.placeholder = "Listening...";
+            });
+
+            recognition.addEventListener('result', (e) => {
+                const speechToText = e.results[0][0].transcript;
+                chatUserInput.value = speechToText;
+            });
+
+            recognition.addEventListener('end', () => {
+                chatMicBtn.classList.remove('listening');
+                chatUserInput.placeholder = "Type a message...";
+                if (chatUserInput.value.trim() !== "") {
+                    handleUserMessage();
+                }
+            });
+
+            recognition.addEventListener('error', (err) => {
+                console.error("Speech recognition error:", err.error);
+                chatMicBtn.classList.remove('listening');
+                chatUserInput.placeholder = "Type a message...";
+            });
+        } else if (chatMicBtn) {
+            chatMicBtn.style.display = 'none';
+        }
 
         async function handleUserMessage() {
             const text = chatUserInput.value.trim();
@@ -437,7 +481,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const msgDiv = document.createElement('div');
             msgDiv.className = `chat-message ${className}`;
             
-            // Converts Markdown links [Text](URL) and raw URLs into clickable HTML links
             let formattedText = text
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--accent-color); text-decoration: underline;">$1</a>')
                 .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent-color); text-decoration: underline;">$1</a>');
@@ -462,12 +505,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const videoRotateBtn = document.querySelector('.video-rotate-btn');
     const carouselSlides = document.querySelectorAll('.carousel-slide');
 
-    // 1. Open Video Lightbox when clicking a slide
     carouselSlides.forEach(slide => {
         slide.addEventListener('click', (e) => {
             const videoId = slide.getAttribute('data-video-id');
             if (videoId && videoLightbox) {
-                // Prevent browser history stack filling up by replacing the DOM node
                 const newIframe = document.createElement('iframe');
                 newIframe.id = 'lightbox-iframe';
                 newIframe.title = 'Cinematic Video';
@@ -483,7 +524,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. Close Lightbox when clicking the dark background outside the video
     if (videoLightbox) {
         videoLightbox.addEventListener('click', (e) => {
             if (e.target === videoLightbox) {
@@ -492,14 +532,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to safely close and reset the video player
     function closeVideoLightbox() {
         if (videoLightbox) {
             videoLightbox.classList.remove('active');
-            
-            // Wait for fade-out animation to finish, then kill the video & reset rotation
             setTimeout(() => {
-                // Recreate empty iframe to avoid history push
                 const newIframe = document.createElement('iframe');
                 newIframe.id = 'lightbox-iframe';
                 newIframe.title = 'Cinematic Video';
@@ -516,7 +552,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 3. Rotate Button Logic
     if (videoRotateBtn && videoLightboxContent) {
         videoRotateBtn.addEventListener('click', () => {
             videoLightboxContent.classList.toggle('rotated');
