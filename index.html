@@ -151,7 +151,7 @@
                         </div>
                         <div class="carousel-slide" data-video-id="tk60bUvYX5w" style="background-image: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('oggy_work.webp');">
                             <div class="slide-content">
-                                <h5>Oggy's BHK Home Tour</h5>
+                                <h5>Oggy's ∞ BHK Home Tour</h5>
                                 <span class="watch-badge"><i class="fas fa-play"></i> Play Video</span>
                             </div>
                         </div>
@@ -174,6 +174,25 @@
                 </div>
             </div>
 
+            <!-- Downside Descriptions for Projects -->
+            <div class="glass-card" style="margin-top: 25px; padding: 25px;">
+                <h4 style="color: var(--text-main); font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px;">PROJECT BREAKDOWN & DETAILS</h4>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                        <strong style="color: var(--accent-color);">The Catacombs : Mini Militia</strong>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Inspired by the 2D game Mini Militia, this environment was built in 3D using Blender. The pipeline utilizes Nuke for digital compositing and DaVinci Resolve for final video editing and color grading.</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--accent-color);">Oggy's ∞ BHK Home Tour</strong>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Inspired by the cartoon Oggy house, this environment was created in Blender using geometry node setups. The project incorporates Nuke for compositing and DaVinci Resolve for final video editing and color grading.</p>
+                    </div>
+                    <div>
+                        <strong style="color: var(--accent-color);">The Outpost : Mini Militia</strong>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Inspired by the 2D game Mini Militia, this environment was created in 3D using Blender and custom geometry node setups. The workflow is completed with Nuke for digital compositing and DaVinci Resolve for final video editing and color grading.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="project-popup-btn-container" id="popup-btn-container">
                 <a href="explore.html" id="project-action-btn" class="btn-primary project-popup-btn">
                     Explore <i class="fas fa-arrow-right"></i>
@@ -185,194 +204,199 @@
 
     <!-- Interactive Asset Store -->
     <section id="store" class="section">
-        <h3 class="section-title">3D ASSET STORE</h3>
-        
-        <div class="store-controls">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="asset-search" placeholder="Search assets...">
-            </div>
-
-            <div class="store-controls-right" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <div class="filter-container">
-                    <button class="filter-btn active" data-filter="all">ALL</button>
-                    <button class="filter-btn" data-filter="free">FREE ONLY</button>
-                    <button class="filter-btn" data-filter="models">3D MODELS</button>
-                    <button class="filter-btn" data-filter="projects">PROJECT FILES</button>
-                    <button class="filter-btn" data-filter="vfx">VFX & SIM</button>
-                </div>
-
-                <!-- CUSTOM SORT DROPDOWN -->
-                <div class="custom-sort-wrapper" id="custom-sort-wrapper">
-                    <div class="custom-sort-header" id="custom-sort-header">
-                        <span id="custom-sort-label">Old to New</span>
-                        <i class="fas fa-chevron-down arrow-icon"></i>
-                    </div>
-                    <div class="custom-sort-options" id="custom-sort-options">
-                        <div class="sort-option" data-value="new-old">New to Old</div>
-                        <div class="sort-option active" data-value="old-new">Old to New</div>
-                        <div class="sort-option" data-value="name-asc">Name: A to Z</div>
-                        <div class="sort-option" data-value="name-desc">Name: Z to A</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="store-grid">
-            <div class="store-card paid models" data-category="paid models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="oggyhouse.webp" alt="Oggy House 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge paid">$5</span>
-                    <h5>Oggy House 3D Model</h5>
-                    <p class="format">3D Environment</p>
-                    <a href="https://vizlizer.gumroad.com/l/cegned" class="btn-gumroad">Get Asset</a>
-                </div>
-            </div>
-
-            <div class="store-card free projects" data-category="free projects">
-                <div class="card-img" style="padding: 0; overflow: hidden;">
-                    <img src="aadu.webp" alt="Aadu Project File" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Aadu Project File</h5>
-                    <p class="format">3D Project File</p>
-                    <a href="https://vizlizer.gumroad.com/l/uuhssv" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card paid models" data-category="paid models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="premier.webp" alt="Premier Padmini Taxi 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge paid">$2</span>
-                    <h5>Premier Padmini Taxi 3D Model</h5>
-                    <p class="format">3D Vehicle Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/oixlsq" class="btn-gumroad">Get Asset</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="dragon.webp" alt="Dragon 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Dragon 3D Model</h5>
-                    <p class="format">3D Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/ncnsgo" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="saw.webp" alt="Saw Gun Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Saw Gun Mini Militia 3D Model</h5>
-                    <p class="format">3D Weapon Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/fgwef" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="flame.webp" alt="Flame Thrower Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Flame Thrower Mini Militia 3D Model</h5>
-                    <p class="format">3D Weapon Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/mpyftv" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="porsche.webp" alt="Porsche 911 Minnal Murali Edition 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Porsche 911 Minnal Murali Edition 3D Model</h5>
-                    <p class="format">3D Vehicle Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/nglukf" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free vfx" data-category="free vfx simulation">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="portal.webp" alt="Dr Strange Portal Particle Simulation" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Dr Strange Portal Particle Simulation</h5>
-                    <p class="format">VFX & Simulation</p>
-                    <a href="https://vizlizer.gumroad.com/l/lshub" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="electric.webp" alt="Electric Gun + Tesla Sphere Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Electric Gun + Tesla Sphere Mini Militia</h5>
-                    <p class="format">3D Weapon Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/wybdc" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="mark.webp" alt="Mark Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Mark Cockroach (Oggy) 3D Model</h5>
-                    <p class="format">3D Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/ymivh" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="joey.webp" alt="Joey Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Joey Cockroach (Oggy) 3D Model</h5>
-                    <p class="format">3D Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/vaurn" class="btn-gumroad">Download</a>
-                </div>
-            </div>
-
-            <div class="store-card free models" data-category="free models">
-                <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
-                    <img src="dee_dee.webp" alt="Dee Dee Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="card-details">
-                    <span class="badge free">FREE</span>
-                    <h5>Dee Dee Cockroach (Oggy) 3D Model</h5>
-                    <p class="format">3D Model</p>
-                    <a href="https://vizlizer.gumroad.com/l/nosvzr" class="btn-gumroad">Download</a>
-                </div>
-            </div>
+        <div class="glass-card" style="padding: 35px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <h3 class="section-title" style="margin-bottom: 12px;">3D ASSET STORE</h3>
             
+            <p style="color: var(--text-muted); font-size: 0.95rem; text-align: left; margin: 0 0 30px 0; line-height: 1.6;">
+                Explore a curated collection of production-ready 3D models, procedural assets, and project files. Built for creators, animators, and game developers, every asset is optimized for high visual fidelity and seamless integration into your favorite pipelines.
+            </p>
+
+            <div class="store-controls" style="margin-bottom: 30px;">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="asset-search" placeholder="Search assets...">
+                </div>
+
+                <div class="store-controls-right" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <div class="filter-container">
+                        <button class="filter-btn active" data-filter="all">ALL</button>
+                        <button class="filter-btn" data-filter="free">FREE ONLY</button>
+                        <button class="filter-btn" data-filter="models">3D MODELS</button>
+                        <button class="filter-btn" data-filter="projects">PROJECT FILES</button>
+                        <button class="filter-btn" data-filter="vfx">VFX & SIM</button>
+                    </div>
+
+                    <!-- CUSTOM SORT DROPDOWN -->
+                    <div class="custom-sort-wrapper" id="custom-sort-wrapper">
+                        <div class="custom-sort-header" id="custom-sort-header">
+                            <span id="custom-sort-label">Old to New</span>
+                            <i class="fas fa-chevron-down arrow-icon"></i>
+                        </div>
+                        <div class="custom-sort-options" id="custom-sort-options">
+                            <div class="sort-option" data-value="new-old">New to Old</div>
+                            <div class="sort-option active" data-value="old-new">Old to New</div>
+                            <div class="sort-option" data-value="name-asc">Name: A to Z</div>
+                            <div class="sort-option" data-value="name-desc">Name: Z to A</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="store-grid" style="margin-bottom: 0;">
+                <div class="store-card paid models" data-category="paid models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="oggyhouse.webp" alt="Oggy House 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge paid">$5</span>
+                        <h5>Oggy House 3D Model</h5>
+                        <p class="format">3D Environment</p>
+                        <a href="https://vizlizer.gumroad.com/l/cegned" class="btn-gumroad">Get Asset</a>
+                    </div>
+                </div>
+
+                <div class="store-card free projects" data-category="free projects">
+                    <div class="card-img" style="padding: 0; overflow: hidden;">
+                        <img src="aadu.webp" alt="Aadu Project File" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Aadu Project File</h5>
+                        <p class="format">3D Project File</p>
+                        <a href="https://vizlizer.gumroad.com/l/uuhssv" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card paid models" data-category="paid models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="premier.webp" alt="Premier Padmini Taxi 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge paid">$2</span>
+                        <h5>Premier Padmini Taxi 3D Model</h5>
+                        <p class="format">3D Vehicle Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/oixlsq" class="btn-gumroad">Get Asset</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="dragon.webp" alt="Dragon 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Dragon 3D Model</h5>
+                        <p class="format">3D Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/ncnsgo" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="saw.webp" alt="Saw Gun Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Saw Gun Mini Militia 3D Model</h5>
+                        <p class="format">3D Weapon Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/fgwef" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="flame.webp" alt="Flame Thrower Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Flame Thrower Mini Militia 3D Model</h5>
+                        <p class="format">3D Weapon Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/mpyftv" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="porsche.webp" alt="Porsche 911 Minnal Murali Edition 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Porsche 911 Minnal Murali Edition 3D Model</h5>
+                        <p class="format">3D Vehicle Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/nglukf" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free vfx" data-category="free vfx simulation">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="portal.webp" alt="Dr Strange Portal Particle Simulation" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Dr Strange Portal Particle Simulation</h5>
+                        <p class="format">VFX & Simulation</p>
+                        <a href="https://vizlizer.gumroad.com/l/lshub" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="electric.webp" alt="Electric Gun + Tesla Sphere Mini Militia 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Electric Gun + Tesla Sphere Mini Militia</h5>
+                        <p class="format">3D Weapon Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/wybdc" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="mark.webp" alt="Mark Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Mark Cockroach (Oggy) 3D Model</h5>
+                        <p class="format">3D Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/ymivh" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="joey.webp" alt="Joey Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Joey Cockroach (Oggy) 3D Model</h5>
+                        <p class="format">3D Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/vaurn" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+
+                <div class="store-card free models" data-category="free models">
+                    <div class="card-img" style="padding: 0; overflow: hidden; position: relative;">
+                        <img src="dee_dee.webp" alt="Dee Dee Cockroach (Oggy) 3D Model" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="card-details">
+                        <span class="badge free">FREE</span>
+                        <h5>Dee Dee Cockroach (Oggy) 3D Model</h5>
+                        <p class="format">3D Model</p>
+                        <a href="https://vizlizer.gumroad.com/l/nosvzr" class="btn-gumroad">Download</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- About & Tools -->
     <section id="about" class="section about-section">
-        <div class="about-text">
+        <div class="about-text glass-card">
             <h3>ABOUT</h3>
-            <p>Freelance 3D artist, specializing in procedural simulations, real-time environments, and comprehensive VFX pipelines.</p>
+            <p>VIZ LIZER is a specialized freelance 3D art and visual effects studio focusing on procedural simulations, real-time environments, and comprehensive post-production pipelines. Operating at the intersection of technical execution and creative storytelling, every asset and scene is meticulously engineered for real-time engines, cinematic animations, and digital production.</p>
         </div>
-        <div class="tools-grid">
+        <div class="tools-grid glass-card">
             <span>Houdini</span>
             <span>Blender</span>
             <span>Unreal Engine</span>
@@ -382,8 +406,18 @@
         </div>
     </section>
 
+    <!-- Technical Workflow Section -->
+    <section class="section" style="padding-top: 0;">
+        <div class="glass-card" style="padding: 30px;">
+            <h3 class="section-title" style="margin-bottom: 20px;">TECHNICAL WORKFLOW</h3>
+            <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.7;">
+                Leveraging advanced procedural nodes in Houdini and geometry node networks in Blender, the simulation workflow focuses on dynamic particle systems, fluid interactions, and physics-driven particle simulations. Detailed surface texturing, gradient maps, and material shading are meticulously painted using Substance Painter. For final delivery, sequences are brought into DaVinci Resolve for ACEScg color grading and high-end video editing, ensuring seamless integration across real-time engines like Unreal Engine and deep compositing workflows in Nuke.
+            </p>
+        </div>
+    </section>
+
     <!-- MANUAL GOOGLE ADSENSE BANNER SECTION -->
-    <section class="section" style="text-align: center; padding: 20px 5%;">
+    <div style="text-align: center; padding: 10px 5% 40px 5%;">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2622477482330900"
              crossorigin="anonymous"></script>
         <ins class="adsbygoogle"
@@ -395,7 +429,7 @@
         <script>
              (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-    </section>
+    </div>
 
     <!-- VIDEO POPUP LIGHTBOX -->
     <div id="video-lightbox" class="video-lightbox">
@@ -452,6 +486,7 @@
             </a>
         </div>
 
+        <p style="margin-top: 15px;"><a href="privacy.html" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: underline;">Privacy Policy</a></p>
         <p class="copyright">© 2026 VIZ LIZER. All rights reserved.</p>
         <p class="gumroad-secure">Securely powered by Gumroad.</p>
     </footer>
