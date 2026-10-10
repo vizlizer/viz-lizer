@@ -351,17 +351,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("asset-search");
     let currentCategoryFilter = "all";
     
-    // FIX: Take a permanent snapshot of the original "Old to New" HTML order on load.
     const originalCardsOrder = storeGrid ? Array.from(storeGrid.querySelectorAll(".store-card")) : [];
 
-    // Custom Sort Elements
     const customSortWrapper = document.getElementById("custom-sort-wrapper");
     const customSortHeader = document.getElementById("custom-sort-header");
     const customSortLabel = document.getElementById("custom-sort-label");
     const sortOptions = document.querySelectorAll(".sort-option");
     let currentSortValue = "old-new";
 
-    // Toggle custom sort dropdown
     if (customSortHeader) {
         customSortHeader.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -369,41 +366,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Handle sort option clicks
     sortOptions.forEach(option => {
         option.addEventListener("click", (e) => {
             e.stopPropagation();
-            
-            // Update UI
             sortOptions.forEach(opt => opt.classList.remove("active"));
             option.classList.add("active");
             customSortLabel.innerText = option.innerText;
-            
-            // Close dropdown
             customSortWrapper.classList.remove("open");
-            
-            // Trigger actual sorting
             currentSortValue = option.getAttribute("data-value");
             filterAndSortAssets();
         });
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", (e) => {
         if (customSortWrapper && !customSortWrapper.contains(e.target)) {
             customSortWrapper.classList.remove("open");
         }
     });
 
-    // The core filtering and sorting function
     function filterAndSortAssets() {
         if (!storeGrid) return;
         const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
-        
-        // Grab the live array to manipulate, but we will sort it against the immutable "originalCardsOrder"
         const liveCardsArray = Array.from(storeGrid.querySelectorAll(".store-card"));
 
-        // 1. Filter visibility
         liveCardsArray.forEach(card => {
             const categories = card.getAttribute("data-category").split(" ");
             const title = card.querySelector("h5").innerText.toLowerCase();
@@ -417,7 +402,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // 2. Sort cards array
         liveCardsArray.sort((a, b) => {
             const titleA = a.querySelector("h5").innerText.toLowerCase();
             const titleB = b.querySelector("h5").innerText.toLowerCase();
@@ -427,19 +411,15 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (currentSortValue === "name-desc") {
                 return titleB.localeCompare(titleA);
             } else if (currentSortValue === "new-old") {
-                // Relies on the exact immutable order snapshot taken at load
                 return originalCardsOrder.indexOf(b) - originalCardsOrder.indexOf(a);
             } else { 
-                // "old-new"
                 return originalCardsOrder.indexOf(a) - originalCardsOrder.indexOf(b);
             }
         });
 
-        // Re-append sorted cards into the grid container smoothly
         liveCardsArray.forEach(card => storeGrid.appendChild(card));
     }
 
-    // Connect filters to the system
     filterButtons.forEach(button => {
         button.addEventListener("click", () => {
             filterButtons.forEach(btn => btn.classList.remove("active"));
@@ -449,10 +429,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Connect search bar
     if (searchInput) {
         searchInput.addEventListener("input", filterAndSortAssets);
     }
+
+    // --- CARD DESCRIPTION MODAL LOGIC ---
+    const cardInfoButtons = document.querySelectorAll('.card-info-btn');
+    cardInfoButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const targetModalId = btn.getAttribute('data-modal-target');
+            const targetModal = document.getElementById(targetModalId);
+            if (targetModal) {
+                targetModal.classList.add('active');
+            }
+        });
+    });
+
+    const closeAssetModals = document.querySelectorAll('.close-asset-modal');
+    closeAssetModals.forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            const modal = closeBtn.closest('.asset-desc-modal');
+            if (modal) modal.classList.remove('active');
+        });
+    });
+
+    const allAssetModals = document.querySelectorAll('.asset-desc-modal');
+    allAssetModals.forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+    });
 
     // --- MOBILE HAMBURGER MENU ---
     const hamburgerBtn = document.getElementById('hamburger-icon');
@@ -489,7 +498,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         chatCloseBtn.addEventListener('click', () => chatWindow.classList.remove('active'));
 
-        // SPEECH-TO-TEXT VOICE INPUT SETUP
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition && chatMicBtn) {
             const recognition = new SpeechRecognition();
@@ -498,11 +506,7 @@ document.addEventListener("DOMContentLoaded", () => {
             recognition.lang = 'en-US';
 
             chatMicBtn.addEventListener('click', () => {
-                try {
-                    recognition.start();
-                } catch (e) {
-                    console.log("Recognition already started");
-                }
+                try { recognition.start(); } catch (e) { console.log("Recognition already started"); }
             });
 
             recognition.addEventListener('start', () => {
@@ -518,9 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
             recognition.addEventListener('end', () => {
                 chatMicBtn.classList.remove('listening');
                 chatUserInput.placeholder = "Type a message...";
-                if (chatUserInput.value.trim() !== "") {
-                    handleUserMessage();
-                }
+                if (chatUserInput.value.trim() !== "") { handleUserMessage(); }
             });
 
             recognition.addEventListener('error', (err) => {
@@ -558,13 +560,10 @@ document.addEventListener("DOMContentLoaded", () => {
         function appendMessage(text, className) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `chat-message ${className}`;
-            
             let formattedText = text
                 .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color: var(--accent-color); text-decoration: underline;">$1</a>')
                 .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: var(--accent-color); text-decoration: underline;">$1</a>');
-            
             msgDiv.innerHTML = formattedText;
-            
             const uniqueId = 'msg-' + Date.now();
             msgDiv.id = uniqueId;
             chatMessages.appendChild(msgDiv);
@@ -596,7 +595,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 videoLightboxContent.replaceChild(newIframe, lightboxIframe);
                 lightboxIframe = newIframe;
-                
                 videoLightbox.classList.add('active');
             }
         });
@@ -604,9 +602,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (videoLightbox) {
         videoLightbox.addEventListener('click', (e) => {
-            if (e.target === videoLightbox) {
-                closeVideoLightbox();
-            }
+            if (e.target === videoLightbox) { closeVideoLightbox(); }
         });
     }
 
@@ -620,7 +616,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 newIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
                 newIframe.setAttribute('allowfullscreen', 'true');
                 newIframe.src = "";
-                
                 videoLightboxContent.replaceChild(newIframe, lightboxIframe);
                 lightboxIframe = newIframe;
 
@@ -634,185 +629,6 @@ document.addEventListener("DOMContentLoaded", () => {
         videoRotateBtn.addEventListener('click', () => {
             videoLightboxContent.classList.toggle('rotated');
             videoRotateBtn.classList.toggle('rotated');
-        });
-    }
-
-    // --- THREE.JS ASSET MODEL VIEWER MODAL LOGIC ---
-    const modelModal = document.getElementById('model-viewer-modal');
-    const previewButtons = document.querySelectorAll('.preview-3d-btn');
-    const closeModelModalBtn = document.querySelector('.close-model-modal');
-    const loadingOverlay = document.getElementById('model-loading-overlay');
-    const hdriSelect = document.getElementById('hdri-select');
-    const assetCanvas = document.getElementById('asset-3d-canvas');
-
-    let assetScene, assetCamera, assetRenderer, activeModel = null, assetAnimationId = null;
-    let isDragging = false, isPanning = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    let assetAmbientLight, assetDirectionalLight1;
-
-    function initAssetViewer() {
-        if (!assetCanvas) return;
-        assetScene = new THREE.Scene();
-        assetCamera = new THREE.PerspectiveCamera(45, assetCanvas.clientWidth / assetCanvas.clientHeight, 0.1, 1000);
-        assetCamera.position.set(0, 0, 5);
-
-        assetRenderer = new THREE.WebGLRenderer({ canvas: assetCanvas, antialias: true, alpha: true });
-        assetRenderer.setSize(assetCanvas.clientWidth, assetCanvas.clientHeight);
-        assetRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        assetAmbientLight = new THREE.AmbientLight(0xffffff, 1.2);
-        assetScene.add(assetAmbientLight);
-
-        assetDirectionalLight1 = new THREE.DirectionalLight(0xffffff, 2.5);
-        assetDirectionalLight1.position.set(5, 10, 7);
-        assetScene.add(assetDirectionalLight1);
-
-        assetCanvas.addEventListener('mousedown', (e) => {
-            if (e.button === 2 || e.shiftKey) isPanning = true;
-            else isDragging = true;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
-
-        assetCanvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        assetCanvas.addEventListener('mousemove', (e) => {
-            let deltaX = e.clientX - previousMousePosition.x;
-            let deltaY = e.clientY - previousMousePosition.y;
-
-            if (isDragging && activeModel) {
-                activeModel.rotation.y += deltaX * 0.008;
-                activeModel.rotation.x += deltaY * 0.008;
-            } else if (isPanning && activeModel) {
-                activeModel.position.x += deltaX * 0.003;
-                activeModel.position.y -= deltaY * 0.003;
-            }
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
-
-        window.addEventListener('mouseup', () => { isDragging = false; isPanning = false; });
-
-        assetCanvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) { 
-                isDragging = true; 
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }; 
-            } else if (e.touches.length === 2) {
-                isPanning = true;
-                previousMousePosition = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
-            }
-        });
-
-        assetCanvas.addEventListener('touchmove', (e) => {
-            if (!activeModel) return;
-            if (isDragging && e.touches.length === 1) {
-                let deltaX = e.touches[0].clientX - previousMousePosition.x;
-                let deltaY = e.touches[0].clientY - previousMousePosition.y;
-                activeModel.rotation.y += deltaX * 0.008;
-                activeModel.rotation.x += deltaY * 0.008;
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            } else if (isPanning && e.touches.length === 2) {
-                let currentX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                let currentY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                let deltaX = currentX - previousMousePosition.x;
-                let deltaY = currentY - previousMousePosition.y;
-                activeModel.position.x += deltaX * 0.003;
-                activeModel.position.y -= deltaY * 0.003;
-                previousMousePosition = { x: currentX, y: currentY };
-            }
-        });
-
-        window.addEventListener('touchend', () => { isDragging = false; isPanning = false; });
-
-        assetCanvas.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            assetCamera.position.z += e.deltaY * 0.005;
-            assetCamera.position.z = Math.max(1, Math.min(15, assetCamera.position.z));
-        }, { passive: false });
-
-        window.addEventListener('resize', () => {
-            if (!assetCanvas || !assetRenderer) return;
-            const container = assetCanvas.parentElement;
-            assetCamera.aspect = container.clientWidth / container.clientHeight;
-            assetCamera.updateProjectionMatrix();
-            assetRenderer.setSize(container.clientWidth, container.clientHeight);
-        });
-    }
-
-    function loadAssetModel(modelPath) {
-        if (!assetScene) initAssetViewer();
-        if (loadingOverlay) loadingOverlay.classList.remove('hide');
-        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
-
-        const loader = new THREE.GLTFLoader();
-        loader.load(modelPath, (gltf) => {
-            activeModel = gltf.scene;
-            
-            const box = new THREE.Box3().setFromObject(activeModel);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 3.2 / maxDim;
-            
-            activeModel.scale.set(scale, scale, scale);
-            box.setFromObject(activeModel);
-            box.getCenter(center);
-            activeModel.position.sub(center);
-
-            assetScene.add(activeModel);
-            if (loadingOverlay) loadingOverlay.classList.add('hide');
-        }, undefined, (error) => {
-            console.error("Error loading GLB:", error);
-            if (loadingOverlay) loadingOverlay.classList.add('hide');
-            alert("Could not load 3D model. Make sure " + modelPath + " is placed in your project root folder.");
-        });
-
-        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
-        function animateAsset() {
-            assetAnimationId = requestAnimationFrame(animateAsset);
-            assetRenderer.render(assetScene, assetCamera);
-        }
-        animateAsset();
-    }
-
-    previewButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const modelFile = btn.getAttribute('data-model');
-            if (modelModal) {
-                modelModal.classList.add('active');
-                loadAssetModel(modelFile);
-            }
-        });
-    });
-
-    function closeAssetModal() {
-        if (modelModal) modelModal.classList.remove('active');
-        if (assetAnimationId) cancelAnimationFrame(assetAnimationId);
-        if (activeModel) { assetScene.remove(activeModel); activeModel = null; }
-    }
-
-    if (closeModelModalBtn) closeModelModalBtn.addEventListener('click', closeAssetModal);
-    if (modelModal) {
-        modelModal.addEventListener('click', (e) => {
-            if (e.target === modelModal) closeAssetModal();
-        });
-    }
-
-    if (hdriSelect) {
-        hdriSelect.addEventListener('change', (e) => {
-            const val = e.target.value;
-            if (val === 'studio') {
-                assetAmbientLight.intensity = 1.2;
-                assetDirectionalLight1.intensity = 2.5;
-                assetDirectionalLight1.color.setHex(0xffffff);
-            } else if (val === 'sunset') {
-                assetAmbientLight.intensity = 0.8;
-                assetDirectionalLight1.intensity = 3.0;
-                assetDirectionalLight1.color.setHex(0xff7b00);
-            } else if (val === 'night') {
-                assetAmbientLight.intensity = 0.3;
-                assetDirectionalLight1.intensity = 2.0;
-                assetDirectionalLight1.color.setHex(0x00a8ff);
-            }
         });
     }
 });

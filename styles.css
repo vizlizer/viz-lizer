@@ -673,6 +673,91 @@ nav {
     position: relative; 
 }
 
+/* TOP-RIGHT CARD INFO / DESCRIPTION BUTTON */
+.card-info-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-info-btn:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: scale(1.15);
+}
+
+/* ASSET DESCRIPTION MODAL */
+.asset-desc-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease;
+}
+
+.asset-desc-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.asset-desc-modal-content {
+    width: 90%;
+    max-width: 550px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 35px 30px;
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.asset-desc-modal.active .asset-desc-modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.close-asset-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-asset-modal:hover {
+    color: var(--accent-color);
+}
+
 .store-card::after {
     content: '';
     position: absolute;
@@ -1416,10 +1501,9 @@ footer h3 {
 
 .sort-option.active {
     color: var(--accent-color);
-    background-color: rgba(255, 87, 34, 0.05); /* Will tint with orange naturally */
+    background-color: rgba(255, 87, 34, 0.05);
 }
 
-/* Adjust for mobile to take full width */
 @media (max-width: 768px) {
     .store-controls-right {
         width: 100%;
